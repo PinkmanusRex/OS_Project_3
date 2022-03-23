@@ -84,11 +84,11 @@ void __init_directory(pde_t *directory, unsigned long no_entries);
 
 /* will increment the value of va as you write
  * va - the virtual address yet to be "written" to
- * source - the address of the next byte to write down -> the contents of *source are the address
- * dest - the address of the next byte to be written to -> the contents of *dest are the actual char itself
+ * source - the address of the next byte to write down 
+ * destination - the address of the next byte to be written to 
  * rem_size - the remaining amount of bytes to be written down
  * len - how much space is between the dest and the end of the page
  */
-void __write(unsigned long *va, char **source , char *dest, unsigned long *rem_size, unsigned long len);
+void __write(unsigned long *va, unsigned long *source , unsigned long *destination, unsigned long *rem_size, unsigned long len);
 
 #endif

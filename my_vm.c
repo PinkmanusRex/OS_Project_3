@@ -269,12 +269,16 @@ void __init_directory(pde_t *directory, unsigned long no_entries) {
     }
 }
 
-void __write(unsigned long *va, char **source, char *dest, unsigned long *rem_size, unsigned long len) {
+void __write(unsigned long *va, unsigned long *source, unsigned long *destination, unsigned long *rem_size, unsigned long len) {
+    char *src = 0;
+    char *dest = 0;
     for (unsigned long i = 0UL; i < len && rem_size; i += 1UL) {
-        *dest = **source;
+        src = (char *) *source;
+        dest = (char *) *destination;
+        *dest = *src;
         *va += 1UL; //the virtual address advances one byte
-        *source += 1; //advance the *source pointer
-        dest += 1; //advance the dest pointer
+        *source += 1UL; //advance the *source pointer
+        *destination += 1UL; //advance the destination pointer
         *rem_size -= 1UL; //one less byte to write
     }
 }
