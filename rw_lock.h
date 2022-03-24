@@ -8,10 +8,6 @@ struct rw_lock {
     pthread_cond_t cond;
 };
 
-struct rw_lock __tlb_rw_lock;
-struct rw_lock __table_rw_lock;
-struct rw_lock __physical_rw_lock;
-
 void __init_rw_lock(struct rw_lock *rw);
 
 void __destroy_rw_lock(struct rw_lock *rw);
