@@ -32,8 +32,14 @@ unsigned long no_v_pages = 0;
 
 char offset_bits = 0;
 
+unsigned long no_free_p_pages;
+
 char *physical_bitmap = 0;
 char *virtual_bitmap = 0;
+
+unsigned int no_free_tlb = TLB_ENTRIES;
+unsigned int clock_hand = 0;
+char *tlb_bitmap = 0;
 
 char l1_bits = 0;
 char l2_bits = 0;
@@ -60,8 +66,16 @@ void set_physical_mem() {
     l2_bits = (char) log2((PGSIZE/sizeof(pte_t)));
     l1_bits = SYSBITS - offset_bits - l2_bits;
 
-    physical_bitmap = (char*) malloc((no_p_pages/8));
-    virtual_bitmap = (char *) malloc((no_v_pages/8));
+    /* how many bytes to allocate for the bitmaps*/
+    unsigned long no_char_p = no_p_pages/8UL;
+    if (no_p_pages % 8UL != 0UL) //but must be sure to keep in mind possible non-zero remainder. that needs a byte allocated as well
+        no_char_p += 1UL;
+    unsigned long no_char_v = no_v_pages/8UL;
+    if (no_v_pages % 8UL != 0UL)
+        no_char_v += 1UL;
+
+    physical_bitmap = (char*) malloc(no_char_p);
+    virtual_bitmap = (char *) malloc(no_char_v);
 
     //And also creating the root page directory and reserving the first necessary amount of physical bits
 
@@ -72,12 +86,24 @@ void set_physical_mem() {
     unsigned int no_p_bits_to_reserve = __calc_nec_pages(no_entries*sizeof(pde_t));
     for (unsigned int idx = 0U; idx < no_p_bits_to_reserve; idx += 1U)
         __set_bit_at_index(physical_bitmap, idx);
+
+    no_free_p_pages -= no_p_bits_to_reserve;
+
+    unsigned int no_char_tlb = TLB_ENTRIES/8;
+    if (TLB_ENTRIES % 8 != 0)
+        no_char_tlb += 1U;
+
+    tlb_bitmap = (char *) malloc(no_char_tlb);
+    for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U)
+        tlb_store.entries[i].valid = 0;
 }
 
 
 /*
  * Part 2: Add a virtual to physical page translation to the TLB.
  * Feel free to extend the function arguments or return type.
+ * 
+ * assumption is that va and pa have had the offset taken out
  */
 int
 add_TLB(void *va, void *pa)
@@ -85,8 +111,23 @@ add_TLB(void *va, void *pa)
     __initialization_check();
 
     /*Part 2 HINT: Add a virtual to physical page translation to the TLB */
+    unsigned int candidate = 0U;
+    if (!no_free_tlb) {
+        candidate = __clock_replacement();
+    } else {
+        for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U) {
+            if (!tlb_store.entries[i].valid) {
+                candidate = i;
+                break;
+            }
+        }
+    }
+    tlb_store.entries[candidate].vpn = (unsigned long) va;
+    tlb_store.entries[candidate].pfn = (unsigned long) pa;
+    tlb_store.entries[candidate].valid = 1;
+    __set_bit_at_index(tlb_bitmap, candidate);
 
-    return -1;
+    return 0;
 }
 
 
@@ -340,6 +381,13 @@ void __set_bit_at_index(char *bitmap, unsigned long index) {
     return;
 }
 
+void __unset_bit_at_index(char *bitmap, unsigned long index) {
+    unsigned long bitmap_index = index / 8UL;
+    unsigned long offset = index % 8UL;
+    bitmap[bitmap_index] = bitmap[bitmap_index] & ~(1 << (7 - offset));
+    return;
+}
+
 unsigned int __get_bit_at_index(char *bitmap, unsigned long index) {
     unsigned long bitmap_index = index / 8UL;
     unsigned long offset = index % 8UL;
@@ -420,4 +468,21 @@ unsigned long __insert_page_table() {
     unsigned long addr = ((p_base + p_page_idx) << offset_bits) | p_offset;
     __init_table((pte_t *) addr, (1U << l2_bits));
     return (p_base + p_page_idx);
+}
+
+unsigned int __clock_replacement() {
+    unsigned int candidate = 0U;
+    while (1) {
+        if (clock_hand == TLB_ENTRIES)
+            clock_hand = 0;
+        if (__get_bit_at_index(tlb_bitmap, clock_hand)) {
+            __unset_bit_at_index(tlb_bitmap, clock_hand);
+            clock_hand += 1U;
+        } else {
+            candidate = clock_hand;
+            clock_hand += 1U;
+            break;
+        }
+    }
+    return candidate;
 }

@@ -27,14 +27,21 @@ typedef unsigned long pde_t;
 
 #define TLB_ENTRIES 512
 
+struct tlb_entry {
+    char valid;
+    unsigned long vpn;
+    unsigned long pfn;
+};
+
 //Structure to represents TLB
 struct tlb {
     /*Assume your TLB is a direct mapped TLB with number of entries as TLB_ENTRIES
     * Think about the size of each TLB entry that performs virtual to physical
     * address translation.
     */
-
+    struct tlb_entry entries[TLB_ENTRIES];
 };
+
 struct tlb tlb_store;
 
 

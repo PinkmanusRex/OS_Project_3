@@ -17,8 +17,16 @@ extern unsigned long no_v_pages;
 
 extern char offset_bits;
 
+//to aid in speeding up the objective of knowing if there are enough free physical pages left
+extern unsigned long no_free_p_pages;
+
 extern char *physical_bitmap;
 extern char *virtual_bitmap;
+
+//for use in clock replacement algorithm
+extern unsigned int no_free_tlb;
+extern unsigned int clock_hand;
+extern char *tlb_bitmap;
 
 extern char l1_bits;
 extern char l2_bits;
@@ -29,6 +37,8 @@ unsigned long __get_first_fit(char *bitmap, unsigned long bitmap_length, unsigne
 
 /* 0..end left to right */
 void __set_bit_at_index(char *bitmap, unsigned long index);
+
+void __unset_bit_at_index(char *bitmap, unsigned long index);
 
 unsigned int __get_bit_at_index(char *bitmap, unsigned long index);
 
@@ -57,3 +67,5 @@ unsigned int __calc_nec_pages(unsigned int size);
 unsigned long __insert_page_table();
 
 unsigned long __insert_page_dir();
+
+unsigned int __clock_replacement();
