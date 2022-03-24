@@ -1,4 +1,7 @@
 #include "my_vm.h"
+#include "rw_lock.h"
+
+#define log2(X) __log_base2(X)
 
 /*
 Function responsible for allocating and setting your physical memory 
@@ -7,11 +10,22 @@ void set_physical_mem() {
 
     //Allocate physical memory using mmap or malloc; this is the total size of
     //your memory you are simulating
-
+    void *physical_mem_ptr = malloc(MEMSIZE);
+    offset_bits = (char) log2(PGSIZE);
+    p_offset = ((unsigned long) physical_mem_ptr) & ((1UL << offset_bits) - 1UL);
+    p_base = ((unsigned long) physical_mem_ptr) >> offset_bits;
     
     //HINT: Also calculate the number of physical and virtual pages and allocate
     //virtual and physical bitmaps and initialize them
 
+    no_p_pages = 1UL << ((char) log2(MEMSIZE) - offset_bits);
+    no_v_pages = 1UL << (SYSBITS - offset_bits);
+
+    l2_bits = (char) log2((PGSIZE/sizeof(pte_t)));
+    l1_bits = SYSBITS - offset_bits - l2_bits;
+
+    physical_bitmap = (char*) malloc((no_p_pages/8));
+    virtual_bitmap = (char *) malloc((no_v_pages/8));
 }
 
 
@@ -151,7 +165,12 @@ void put_value(void *va, void *val, int size) {
      * function.
      */
 
-
+    unsigned long *virtual_addr = 0;
+    *virtual_addr = (unsigned long) va;
+    unsigned long *source = 0;
+    *source = (unsigned long) val;
+    unsigned long *rem_size = 0;
+    *rem_size = size;
 }
 
 
@@ -162,7 +181,12 @@ void get_value(void *va, void *val, int size) {
     * "val" address. Assume you can access "val" directly by derefencing them.
     */
 
-
+    unsigned long *virtual_addr = 0;
+    *virtual_addr = (unsigned long) va;
+    unsigned long *destination = 0;
+    *destination = (unsigned long) val;
+    unsigned long *rem_size = 0;
+    *rem_size = size;
 }
 
 
@@ -281,4 +305,16 @@ void __write(unsigned long *va, unsigned long *source, unsigned long *destinatio
         *destination += 1UL; //advance the destination pointer
         *rem_size -= 1UL; //one less byte to write
     }
+}
+
+char __log_base2(unsigned long long val) {
+    char bits = 0;
+    unsigned long long val2 = val;
+    while (val2 > 0) {
+        val2 >>= 1UL;
+        bits += 1;
+    }
+    if (val % 2 != 0)
+        return bits;
+    return bits - 1;
 }

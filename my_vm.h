@@ -7,6 +7,8 @@
 //Assume the address space is 32 bits, so the max memory size is 4GB
 //Page size is 4KB
 
+#define SYSBITS 32
+
 //Add any important includes here which you may need
 
 #define PGSIZE 4096
@@ -22,6 +24,24 @@ typedef unsigned long pte_t;
 
 // Represents a page directory entry
 typedef unsigned long pde_t;
+
+unsigned long p_base;
+
+unsigned long p_offset;
+
+unsigned long no_p_pages;
+
+unsigned long no_v_pages;
+
+char *physical_bitmap;
+
+char *virtual_bitmap;
+
+char offset_bits; //how many bits are reserved for the offset
+
+char l1_bits;
+
+char l2_bits;
 
 #define TLB_ENTRIES 512
 
@@ -90,5 +110,7 @@ void __init_directory(pde_t *directory, unsigned long no_entries);
  * len - how much space is between the dest and the end of the page
  */
 void __write(unsigned long *va, unsigned long *source , unsigned long *destination, unsigned long *rem_size, unsigned long len);
+
+char __log_base2(unsigned long long val);
 
 #endif
