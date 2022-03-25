@@ -135,6 +135,9 @@ add_TLB(void *va, void *pa)
  * Part 2: Check TLB for a valid translation.
  * Returns the physical page address.
  * Feel free to extend this function and change the return type.
+ *
+ * assumption that va has had the offset taken out
+ * returns address of the pfn in the tlb, so have to dereference that
  */
 pte_t *
 check_TLB(void *va) {
@@ -142,7 +145,13 @@ check_TLB(void *va) {
     __initialization_check();
 
     /* Part 2: TLB lookup code here */
-
+    for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U) {
+        if(tlb_store.entries[i].valid) {
+            if (tlb_store.entries[i].vpn == (unsigned long) va)
+                return &tlb_store.entries[i].pfn;
+        }
+    }
+    return 0;
 }
 
 
@@ -182,6 +191,7 @@ pte_t *translate(pde_t *pgdir, void *va) {
     * Part 2 HINT: Check the TLB before performing the translation. If
     * translation exists, then you can return physical address from the TLB.
     */
+
 
 
     //If translation not successful, then return NULL
@@ -392,24 +402,6 @@ unsigned int __get_bit_at_index(char *bitmap, unsigned long index) {
     unsigned long bitmap_index = index / 8UL;
     unsigned long offset = index % 8UL;
     return (bitmap[bitmap_index] >> (7 - offset)) & 1;
-}
-
-unsigned int __check_empty_table(pte_t *table, unsigned int no_entries) {
-    for (unsigned int idx = 0U; idx < no_entries; idx += 1U) {
-        //0UL is an invalid physical address (since malloc itself will never return 0 and the userspace reserves 0 as the NULL address
-        //as such, if that physical address is 0UL, we can be sure that it is empty
-        if (table[idx] != 0UL)
-            return 0;
-    }
-    return 1;
-}
-
-unsigned int __check_empty_directory(pde_t *directory, unsigned int no_entries) {
-    for (unsigned int idx = 0U; idx < no_entries; idx += 1U) {
-        if (directory[idx] != 0UL)
-            return 0;
-    }
-    return 1;
 }
 
 void __init_table(pte_t *table, unsigned int no_entries) {

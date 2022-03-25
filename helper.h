@@ -28,6 +28,9 @@ extern unsigned int no_free_tlb;
 extern unsigned int clock_hand;
 extern char *tlb_bitmap;
 
+extern unsigned int tlb_hits;
+extern unsigned int tlb_misses;
+
 extern char l1_bits;
 extern char l2_bits;
 
@@ -41,11 +44,6 @@ void __set_bit_at_index(char *bitmap, unsigned long index);
 void __unset_bit_at_index(char *bitmap, unsigned long index);
 
 unsigned int __get_bit_at_index(char *bitmap, unsigned long index);
-
-/* returns 0 for non-empty, 1 for empty */
-unsigned int __check_empty_table(pte_t *table, unsigned int no_entries);
-
-unsigned int __check_empty_directory(pde_t *directory, unsigned int no_entries);
 
 void __init_table(pte_t *table, unsigned int no_entries);
 
