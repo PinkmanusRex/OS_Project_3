@@ -57,4 +57,10 @@ void get_value(void *va, void *val, int size);
 void mat_mult(void *mat1, void *mat2, int size, void *answer);
 void print_TLB_missrate();
 
+//get back the true physical address, which involves right shifting and appending back in the physical offset
+unsigned long __unsanitized_p_addr(unsigned long pa);
+
+unsigned long __get_l1_idx(unsigned long va);
+unsigned long __get_l2_idx(unsigned long va);
+
 #endif

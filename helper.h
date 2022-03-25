@@ -17,9 +17,6 @@ extern unsigned long no_v_pages;
 
 extern char offset_bits;
 
-//to aid in speeding up the objective of knowing if there are enough free physical pages left
-extern unsigned long no_free_p_pages;
-
 extern char *physical_bitmap;
 extern char *virtual_bitmap;
 

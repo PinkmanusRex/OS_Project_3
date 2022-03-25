@@ -32,14 +32,15 @@ unsigned long no_v_pages = 0;
 
 char offset_bits = 0;
 
-unsigned long no_free_p_pages;
-
 char *physical_bitmap = 0;
 char *virtual_bitmap = 0;
 
 unsigned int no_free_tlb = TLB_ENTRIES;
 unsigned int clock_hand = 0;
 char *tlb_bitmap = 0;
+
+unsigned int tlb_hits;
+unsigned int tlb_misses;
 
 char l1_bits = 0;
 char l2_bits = 0;
@@ -87,8 +88,6 @@ void set_physical_mem() {
     for (unsigned int idx = 0U; idx < no_p_bits_to_reserve; idx += 1U)
         __set_bit_at_index(physical_bitmap, idx);
 
-    no_free_p_pages -= no_p_bits_to_reserve;
-
     unsigned int no_char_tlb = TLB_ENTRIES/8;
     if (TLB_ENTRIES % 8 != 0)
         no_char_tlb += 1U;
@@ -97,7 +96,6 @@ void set_physical_mem() {
     for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U)
         tlb_store.entries[i].valid = 0;
 }
-
 
 /*
  * Part 2: Add a virtual to physical page translation to the TLB.
@@ -108,7 +106,6 @@ void set_physical_mem() {
 int
 add_TLB(void *va, void *pa)
 {
-    __initialization_check();
 
     /*Part 2 HINT: Add a virtual to physical page translation to the TLB */
     unsigned int candidate = 0U;
@@ -118,6 +115,7 @@ add_TLB(void *va, void *pa)
         for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U) {
             if (!tlb_store.entries[i].valid) {
                 candidate = i;
+                no_free_tlb -= 1U;
                 break;
             }
         }
@@ -126,10 +124,8 @@ add_TLB(void *va, void *pa)
     tlb_store.entries[candidate].pfn = (unsigned long) pa;
     tlb_store.entries[candidate].valid = 1;
     __set_bit_at_index(tlb_bitmap, candidate);
-
     return 0;
 }
-
 
 /*
  * Part 2: Check TLB for a valid translation.
@@ -142,18 +138,17 @@ add_TLB(void *va, void *pa)
 pte_t *
 check_TLB(void *va) {
 
-    __initialization_check();
-
     /* Part 2: TLB lookup code here */
     for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U) {
         if(tlb_store.entries[i].valid) {
-            if (tlb_store.entries[i].vpn == (unsigned long) va)
+            if (tlb_store.entries[i].vpn == (unsigned long) va) {
+                __set_bit_at_index(tlb_bitmap, i);
                 return &tlb_store.entries[i].pfn;
+            }
         }
     }
     return 0;
 }
-
 
 /*
  * Part 2: Print TLB miss rate.
@@ -174,11 +169,11 @@ print_TLB_missrate()
     fprintf(stderr, "TLB miss rate %lf \n", miss_rate);
 }
 
-
-
 /*
 The function takes a virtual address and page directories starting address and
 performs translation to return the physical address
+
+assumption that va has already had offset taken out
 */
 pte_t *translate(pde_t *pgdir, void *va) {
 
@@ -192,10 +187,30 @@ pte_t *translate(pde_t *pgdir, void *va) {
     * translation exists, then you can return physical address from the TLB.
     */
 
+    pte_t *pa_ptr = NULL;
+    __lock_r_rw_lock(&__tlb_rw_lock); /* read lock */
+    while (1) {
+        pa_ptr = check_TLB(va);
+        if (pa_ptr != NULL) {
+            tlb_hits += 1U;
+            break;
+        } else {
+            tlb_misses += 1U;
+            unsigned long l1_idx = __get_l1_idx((unsigned long) va);
+            pte_t *l2_table = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx]);
+            unsigned long l2_idx = __get_l2_idx((unsigned long) va);
+            unsigned long pa = l2_table[l2_idx];
 
+            __unlock_r_rw_lock(&__tlb_rw_lock); //need to unlock the read lock so that the writing into the TLB can work
+            __lock_w_rw_lock(&__tlb_rw_lock); /* write lock */
+            add_TLB(va, (void *) pa);
+            __unlock_w_rw_lock(&__tlb_rw_lock); /* write unlock */
+            __lock_r_rw_lock(&__tlb_rw_lock); //ensures that there is a read lock once this function exits. This is to protect the returned pointer to the pte_t in a multithreaded environment
+        }
+    }
 
     //If translation not successful, then return NULL
-    return NULL; 
+    return pa_ptr; 
 }
 
 
@@ -209,21 +224,19 @@ virtual address is not present, then a new entry will be added
 int
 page_map(pde_t *pgdir, void *va, void *pa)
 {
-    __lock_w_rw_lock(&__table_rw_lock);
     /*HINT: Similar to translate(), find the page directory (1st level)
     and page table (2nd-level) indices. If no mapping exists, set the
     virtual to physical mapping */
-    unsigned long l1_idx = ((unsigned long) va >> l2_bits);
-    if (pgdir[l1_idx] == 0UL){
+    unsigned long l1_idx = __get_l1_idx((unsigned long) va);
+    if (pgdir[l1_idx] == 0UL){ //can't be 0UL since even if 0UL was a possible pa, the root page directory would have taken that address as its base address already
         __lock_w_rw_lock(&__physical_lock);
         unsigned long table_addr = __insert_page_table();
-        __unlock_w_rw_lock(&__physical_lock);
         pgdir[l1_idx] = table_addr;
+        __unlock_w_rw_lock(&__physical_lock);
     }
-    unsigned long l2_idx = ((unsigned long) va & ((1UL << l2_bits) - 1UL));
-    pte_t *pgtable = (pte_t *) pgdir[l1_idx];
+    unsigned long l2_idx = __get_l2_idx((unsigned long) va);
+    pte_t *pgtable = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx]);
     pgtable[l2_idx] = (unsigned long) pa;
-    __unlock_w_rw_lock(&__table_rw_lock);
     return 0;
 }
 
@@ -233,6 +246,15 @@ page_map(pde_t *pgdir, void *va, void *pa)
 void *get_next_avail(int num_pages) {
  
     //Use virtual address bitmap to find the next free page
+    char found = 0;
+    void *candidate = (void *) __get_fit(virtual_bitmap, no_v_pages, num_pages, &found);
+    if (!found) {
+        printf("Couldn't find enough virtual pages\n");
+        exit(EXIT_FAILURE);
+    }
+    for (unsigned int i = 0; i < num_pages; i += 1U)
+        __set_bit_at_index(virtual_bitmap, (unsigned long) candidate + i);
+    return candidate;
 }
 
 
@@ -256,8 +278,8 @@ void *t_malloc(unsigned int num_bytes) {
    /* 
     * HINT: If the page directory is not initialized, then initialize the
     * page directory. Next, using get_next_avail(), check if there are free pages. If
-    * free pages are available, set the bitmaps and map a new page. Note, you will 
-    * have to mark which physical pages are used. 
+    * free pages are available, set the bitmaps and map a new page. Note, you will
+    * have to mark which physical pages are used.
     */
 
     return NULL;
@@ -457,7 +479,7 @@ unsigned long __insert_page_table() {
         exit(EXIT_FAILURE);
     }
     __set_bit_at_index(physical_bitmap, p_page_idx);
-    unsigned long addr = ((p_base + p_page_idx) << offset_bits) | p_offset;
+    unsigned long addr = __unsanitized_p_addr((p_base + p_page_idx));
     __init_table((pte_t *) addr, (1U << l2_bits));
     return (p_base + p_page_idx);
 }
@@ -477,4 +499,16 @@ unsigned int __clock_replacement() {
         }
     }
     return candidate;
+}
+
+unsigned long __unsanitized_p_addr(unsigned long pa) {
+    return ((pa << offset_bits) | p_offset);
+}
+
+unsigned long __get_l1_idx(unsigned long va) {
+    return (va >> l2_bits);
+}
+
+unsigned long __get_l2_idx(unsigned long va) {
+    return (va & ((1UL << l2_bits) - 1UL));
 }
