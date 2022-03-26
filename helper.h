@@ -64,3 +64,8 @@ unsigned long __insert_page_table();
 unsigned long __insert_page_dir();
 
 unsigned int __clock_replacement();
+
+/* inclusive start and end */
+unsigned int __valid_address(char *bitmap, unsigned long start_idx, unsigned long end_idx);
+
+unsigned long __get_offset(unsigned long va);

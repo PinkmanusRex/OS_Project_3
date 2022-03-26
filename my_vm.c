@@ -80,9 +80,9 @@ void set_physical_mem() {
 
     //And also creating the root page directory and reserving the first necessary amount of physical bits
 
-    l1_base = (p_base << offset_bits) + p_offset;
+    l1_base = p_base;
     unsigned int no_entries = 1U << l1_bits;
-    __init_directory((pde_t *) l1_base, no_entries);
+    __init_directory((pde_t *) __unsanitized_p_addr(l1_base, 0UL), no_entries);
 
     unsigned int no_p_bits_to_reserve = __calc_nec_pages(no_entries*sizeof(pde_t));
     for (unsigned int idx = 0U; idx < no_p_bits_to_reserve; idx += 1U)
@@ -163,8 +163,7 @@ print_TLB_missrate()
 
     /*Part 2 Code here to calculate and print the TLB miss rate*/
 
-
-
+    miss_rate = (double) tlb_misses / (tlb_hits + tlb_misses);
 
     fprintf(stderr, "TLB miss rate %lf \n", miss_rate);
 }
@@ -197,7 +196,7 @@ pte_t *translate(pde_t *pgdir, void *va) {
         } else {
             tlb_misses += 1U;
             unsigned long l1_idx = __get_l1_idx((unsigned long) va);
-            pte_t *l2_table = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx]);
+            pte_t *l2_table = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
             unsigned long l2_idx = __get_l2_idx((unsigned long) va);
             unsigned long pa = l2_table[l2_idx];
 
@@ -235,7 +234,7 @@ page_map(pde_t *pgdir, void *va, void *pa)
         __unlock_w_rw_lock(&__physical_lock);
     }
     unsigned long l2_idx = __get_l2_idx((unsigned long) va);
-    pte_t *pgtable = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx]);
+    pte_t *pgtable = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
     pgtable[l2_idx] = (unsigned long) pa;
     return 0;
 }
@@ -304,6 +303,8 @@ void t_free(void *va, int size) {
 /* The function copies data pointed by "val" to physical
  * memory pages using virtual address (va)
  * The function returns 0 if the put is successfull and -1 otherwise.
+ *
+ * assumption that va and val haven't had offset taken out
 */
 void put_value(void *va, void *val, int size) {
 
@@ -315,12 +316,39 @@ void put_value(void *va, void *val, int size) {
      * function.
      */
 
+    __lock_w_rw_lock(&__table_rw_lock);
+
     unsigned long *virtual_addr = 0;
     *virtual_addr = (unsigned long) va;
     unsigned long *source = 0;
     *source = (unsigned long) val;
     unsigned long *rem_size = 0;
     *rem_size = size;
+
+    unsigned long end_vpn = ((unsigned long) va + (size - 1)) >> offset_bits;
+
+    if (!__valid_address(virtual_bitmap, ((unsigned long) va >> offset_bits), end_vpn)) {
+        printf("invalid destination address (va) or size given\n");
+        exit(EXIT_FAILURE);
+    }
+
+    while (*rem_size) {
+        pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
+        pte_t *l2_tab = 
+            (pte_t *) __unsanitized_p_addr(
+                    l1_dir[__get_l1_idx(*virtual_addr >> offset_bits)],
+                    0UL
+            );
+        unsigned long *destination = 0;
+        *destination = 
+            __unsanitized_p_addr(
+                    l2_tab[__get_l2_idx(*virtual_addr >> offset_bits)],
+                    __get_offset(*virtual_addr)
+            );
+        __write(virtual_addr, source, destination, rem_size, PGSIZE - __get_offset(*virtual_addr));
+    }
+
+    __unlock_w_rw_lock(&__table_rw_lock);
 }
 
 
@@ -333,12 +361,39 @@ void get_value(void *va, void *val, int size) {
     * "val" address. Assume you can access "val" directly by derefencing them.
     */
 
+    __lock_r_rw_lock(&__table_rw_lock);
+
     unsigned long *virtual_addr = 0;
     *virtual_addr = (unsigned long) va;
     unsigned long *destination = 0;
     *destination = (unsigned long) val;
     unsigned long *rem_size = 0;
     *rem_size = size;
+
+    unsigned long end_vpn = ((unsigned long) va + (size - 1)) >> offset_bits;
+
+    if (!__valid_address(virtual_bitmap, ((unsigned long) va >> offset_bits), end_vpn)) {
+        printf("invalid source address (va) or size given\n");
+        exit(EXIT_FAILURE);
+    }
+
+    while (*rem_size) {
+        pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
+        pte_t *l2_tab = 
+            (pte_t *) __unsanitized_p_addr(
+                    l1_dir[__get_l1_idx(*virtual_addr >> offset_bits)],
+                    0UL
+            );
+        unsigned long *source = 0;
+        *source = 
+            __unsanitized_p_addr(
+                    l2_tab[__get_l2_idx(*virtual_addr >> offset_bits)],
+                    __get_offset(*virtual_addr)
+            );
+        __write(virtual_addr, source, destination, rem_size, PGSIZE - __get_offset(*virtual_addr));
+    }
+
+    __unlock_r_rw_lock(&__table_rw_lock);
 }
 
 
@@ -479,7 +534,7 @@ unsigned long __insert_page_table() {
         exit(EXIT_FAILURE);
     }
     __set_bit_at_index(physical_bitmap, p_page_idx);
-    unsigned long addr = __unsanitized_p_addr((p_base + p_page_idx));
+    unsigned long addr = __unsanitized_p_addr((p_base + p_page_idx), 0UL);
     __init_table((pte_t *) addr, (1U << l2_bits));
     return (p_base + p_page_idx);
 }
@@ -501,8 +556,8 @@ unsigned int __clock_replacement() {
     return candidate;
 }
 
-unsigned long __unsanitized_p_addr(unsigned long pa) {
-    return ((pa << offset_bits) | p_offset);
+unsigned long __unsanitized_p_addr(unsigned long pa, unsigned long offset) {
+    return ((pa << offset_bits) | p_offset) + offset;
 }
 
 unsigned long __get_l1_idx(unsigned long va) {
@@ -511,4 +566,16 @@ unsigned long __get_l1_idx(unsigned long va) {
 
 unsigned long __get_l2_idx(unsigned long va) {
     return (va & ((1UL << l2_bits) - 1UL));
+}
+
+unsigned int __valid_address(char *bitmap, unsigned long start_idx, unsigned long end_idx) {
+    for (unsigned long i = start_idx; i <= end_idx; i += 1UL) {
+        if (!__get_bit_at_index(bitmap, i))
+            return 0;
+    }
+    return 1;
+}
+
+unsigned long __get_offset(unsigned long va) {
+    return (va & ((1UL << offset_bits) - 1UL));
 }
