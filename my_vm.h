@@ -47,6 +47,7 @@ struct tlb tlb_store;
 
 
 void set_physical_mem();
+//will return from this function with a read lock on the tlb_rw_lock, so be sure to unlock once done with the ptr
 pte_t* translate(pde_t *pgdir, void *va);
 int page_map(pde_t *pgdir, void *va, void* pa);
 bool check_in_tlb(void *va);

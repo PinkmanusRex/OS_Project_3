@@ -388,20 +388,18 @@ void put_value(void *va, void *val, int size) {
         exit(EXIT_FAILURE);
     }
 
+    pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
     while (*rem_size) {
-        pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
-        pte_t *l2_tab = 
-            (pte_t *) __unsanitized_p_addr(
-                    l1_dir[__get_l1_idx(*virtual_addr >> offset_bits)],
-                    0UL
-            );
+        pte_t *pa_ptr = translate(l1_dir, (void *)*virtual_addr);
         unsigned long *destination = 0;
-        *destination = 
-            __unsanitized_p_addr(
-                    l2_tab[__get_l2_idx(*virtual_addr >> offset_bits)],
-                    __get_offset(*virtual_addr)
-            );
+        *destination = __unsanitized_p_addr(*pa_ptr, __get_offset(*virtual_addr));
+        __unlock_r_rw_lock(&__tlb_rw_lock);
+
+        /***** read to physical address *****/
+        __lock_w_rw_lock(&__physical_rw_lock);
         __write(virtual_addr, source, destination, rem_size, PGSIZE - __get_offset(*virtual_addr));
+        __unlock_w_rw_lock(&__physical_rw_lock);
+        /************************************/
     }
 
     __unlock_w_rw_lock(&__table_rw_lock);
@@ -433,20 +431,18 @@ void get_value(void *va, void *val, int size) {
         exit(EXIT_FAILURE);
     }
 
+    pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
     while (*rem_size) {
-        pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
-        pte_t *l2_tab = 
-            (pte_t *) __unsanitized_p_addr(
-                    l1_dir[__get_l1_idx(*virtual_addr >> offset_bits)],
-                    0UL
-            );
+        pte_t *pa_ptr = translate(l1_dir, (void *) *virtual_addr);
         unsigned long *source = 0;
-        *source = 
-            __unsanitized_p_addr(
-                    l2_tab[__get_l2_idx(*virtual_addr >> offset_bits)],
-                    __get_offset(*virtual_addr)
-            );
+        *source = __unsanitized_p_addr(*pa_ptr, __get_offset(*virtual_addr));
+        __unlock_r_rw_lock(&__tlb_rw_lock);
+
+        /***** read from physical address *****/
+        __lock_r_rw_lock(&__physical_rw_lock);
         __write(virtual_addr, source, destination, rem_size, PGSIZE - __get_offset(*virtual_addr));
+        __unlock_r_rw_lock(&__physical_rw_lock);
+        /**************************************/
     }
 
     __unlock_r_rw_lock(&__table_rw_lock);
