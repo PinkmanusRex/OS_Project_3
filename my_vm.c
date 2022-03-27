@@ -281,7 +281,33 @@ void *t_malloc(unsigned int num_bytes) {
     * have to mark which physical pages are used.
     */
 
-    return NULL;
+    __lock_w_rw_lock(&__table_rw_lock);
+
+    unsigned int no_pages = num_bytes / PGSIZE;
+    if (num_bytes % PGSIZE != 0U)
+        no_pages += 1U;
+    unsigned long candidate = (unsigned long) get_next_avail(no_pages);
+    pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
+    for (unsigned int i = 0; i < no_pages; i += 1U) {
+        /** finding and marking the physical page **/
+        char found = 0;
+        __lock_w_rw_lock(&__physical_rw_lock); /** physical write lock **/
+        unsigned long p_candidate = __get_fit(physical_bitmap, no_p_pages, 1U, &found);
+        if (!found) {
+            printf("physical memory full\n");
+            exit(EXIT_FAILURE);
+        }
+        __set_bit_at_index(physical_bitmap, p_candidate);
+        __unlock_w_rw_lock(&__physical_rw_lock); /** physical write unlock **/
+        /*******************************************/
+        /******** mapping the vpn to the pfn *******/
+        unsigned long pa = p_base + p_candidate;
+        page_map(l1_dir, (void *)(candidate + i), (void *)pa);
+        /*******************************************/
+    }
+
+    __unlock_w_rw_lock(&__table_rw_lock);
+    return (void *)(candidate << offset_bits);
 }
 
 /* Responsible for releasing one or more memory pages using virtual address (va)
