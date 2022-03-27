@@ -1,4 +1,4 @@
-#include "helper.h"
+#include "my_vm.h"
 
 #define log2(X) __log_base2(X)
 
@@ -186,6 +186,11 @@ pte_t *translate(pde_t *pgdir, void *va) {
     * translation exists, then you can return physical address from the TLB.
     */
 
+    if (!__valid_address(virtual_bitmap, (unsigned long) va, (unsigned long) va)) {
+        printf("can't translate memory never allocated\n");
+        exit(EXIT_FAILURE);
+    }
+
     pte_t *pa_ptr = NULL;
     __lock_r_rw_lock(&__tlb_rw_lock); /* read lock */
     while (1) {
@@ -289,6 +294,9 @@ void *t_malloc(unsigned int num_bytes) {
     unsigned long candidate = (unsigned long) get_next_avail(no_pages);
     pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
     for (unsigned int i = 0; i < no_pages; i += 1U) {
+        /******** marking in virtual bitmap ********/
+        __set_bit_at_index(virtual_bitmap, (candidate + i));
+        /*******************************************/
         /** finding and marking the physical page **/
         char found = 0;
         __lock_w_rw_lock(&__physical_rw_lock); /** physical write lock **/
@@ -322,7 +330,28 @@ void t_free(void *va, int size) {
      *
      * Part 2: Also, remove the translation from the TLB
      */
-    
+
+    __lock_w_rw_lock(&__table_rw_lock);
+
+    unsigned long start_vpn = (unsigned long) va >> offset_bits;
+    unsigned long end_vpn = ((unsigned long) va + (size - 1)) >> offset_bits;
+    if (!__valid_address(virtual_bitmap, start_vpn, end_vpn)) {
+        printf("invalid address or size given to free\n");
+        exit(EXIT_FAILURE);
+    }
+
+    pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
+
+    for (unsigned long vpn_tracker = start_vpn; vpn_tracker <= end_vpn; vpn_tracker += 1UL) {
+        __unset_bit_at_index(virtual_bitmap, vpn_tracker);
+        unsigned long l1_idx = __get_l1_idx(vpn_tracker);
+        pte_t *l2_tab = (pte_t *) __unsanitized_p_addr(l1_dir[l1_idx], 0UL);
+        unsigned long l2_idx = __get_l2_idx(vpn_tracker);
+        unsigned long pfn = l2_tab[l2_idx];
+        __unset_bit_at_index(physical_bitmap, pfn - p_base);
+        __remove_TLB(vpn_tracker);
+    }
+    __unlock_w_rw_lock(&__table_rw_lock);
 }
 
 
@@ -351,9 +380,10 @@ void put_value(void *va, void *val, int size) {
     unsigned long *rem_size = 0;
     *rem_size = size;
 
+    unsigned long start_vpn = (unsigned long) va >> offset_bits;
     unsigned long end_vpn = ((unsigned long) va + (size - 1)) >> offset_bits;
 
-    if (!__valid_address(virtual_bitmap, ((unsigned long) va >> offset_bits), end_vpn)) {
+    if (!__valid_address(virtual_bitmap, start_vpn, end_vpn)) {
         printf("invalid destination address (va) or size given\n");
         exit(EXIT_FAILURE);
     }
@@ -604,4 +634,22 @@ unsigned int __valid_address(char *bitmap, unsigned long start_idx, unsigned lon
 
 unsigned long __get_offset(unsigned long va) {
     return (va & ((1UL << offset_bits) - 1UL));
+}
+
+void __remove_TLB(unsigned long va) {
+    __lock_w_rw_lock(&__tlb_rw_lock);
+    struct tlb_entry *entries = tlb_store.entries;
+    for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U) {
+        if (entries[i].valid) {
+            if (entries[i].vpn == va) {
+                entries[i].valid = 0;
+                __unset_bit_at_index(tlb_bitmap, i);
+                tlb_hits += 1U;
+                __unlock_w_rw_lock(&__tlb_rw_lock);
+                return;
+            }
+        }
+    }
+    tlb_misses += 1U;
+    __unlock_w_rw_lock(&__tlb_rw_lock);
 }
