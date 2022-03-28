@@ -176,8 +176,6 @@ assumption that va has already had offset taken out
 */
 pte_t *translate(pde_t *pgdir, void *va) {
 
-    __initialization_check();
-
     /* Part 1 HINT: Get the Page directory index (1st level) Then get the
     * 2nd-level-page table index using the virtual address.  Using the page
     * directory index and page table index get the physical address.
@@ -233,10 +231,10 @@ page_map(pde_t *pgdir, void *va, void *pa)
     virtual to physical mapping */
     unsigned long l1_idx = __get_l1_idx((unsigned long) va);
     if (pgdir[l1_idx] == 0UL){ //can't be 0UL since even if 0UL was a possible pa, the root page directory would have taken that address as its base address already
-        __lock_w_rw_lock(&__physical_lock);
+        __lock_w_rw_lock(&__physical_lock); //physical write lock
         unsigned long table_addr = __insert_page_table();
         pgdir[l1_idx] = table_addr;
-        __unlock_w_rw_lock(&__physical_lock);
+        __unlock_w_rw_lock(&__physical_lock); //physical write unlock
     }
     unsigned long l2_idx = __get_l2_idx((unsigned long) va);
     pte_t *pgtable = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
@@ -286,7 +284,7 @@ void *t_malloc(unsigned int num_bytes) {
     * have to mark which physical pages are used.
     */
 
-    __lock_w_rw_lock(&__table_rw_lock);
+    __lock_w_rw_lock(&__table_rw_lock); //write lock virtual address space
 
     unsigned int no_pages = num_bytes / PGSIZE;
     if (num_bytes % PGSIZE != 0U)
@@ -314,7 +312,7 @@ void *t_malloc(unsigned int num_bytes) {
         /*******************************************/
     }
 
-    __unlock_w_rw_lock(&__table_rw_lock);
+    __unlock_w_rw_lock(&__table_rw_lock); //write unlock virtual address space
     return (void *)(candidate << offset_bits);
 }
 
@@ -331,7 +329,7 @@ void t_free(void *va, int size) {
      * Part 2: Also, remove the translation from the TLB
      */
 
-    __lock_w_rw_lock(&__table_rw_lock);
+    __lock_w_rw_lock(&__table_rw_lock); //write lock virtual address space
 
     unsigned long start_vpn = (unsigned long) va >> offset_bits;
     unsigned long end_vpn = ((unsigned long) va + (size - 1)) >> offset_bits;
@@ -343,15 +341,17 @@ void t_free(void *va, int size) {
     pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
 
     for (unsigned long vpn_tracker = start_vpn; vpn_tracker <= end_vpn; vpn_tracker += 1UL) {
-        __unset_bit_at_index(virtual_bitmap, vpn_tracker);
+        __unset_bit_at_index(virtual_bitmap, vpn_tracker); //mark availability in virtual bitmap
         unsigned long l1_idx = __get_l1_idx(vpn_tracker);
         pte_t *l2_tab = (pte_t *) __unsanitized_p_addr(l1_dir[l1_idx], 0UL);
         unsigned long l2_idx = __get_l2_idx(vpn_tracker);
         unsigned long pfn = l2_tab[l2_idx];
-        __unset_bit_at_index(physical_bitmap, pfn - p_base);
+        __lock_w_rw_lock(&__physical_rw_lock); //physical write lock
+        __unset_bit_at_index(physical_bitmap, pfn - p_base); //mark availability in physical bitmap
+        __unlock_w_rw_lock(&__physical_rw_lock); //physical write unlock
         __remove_TLB(vpn_tracker);
     }
-    __unlock_w_rw_lock(&__table_rw_lock);
+    __unlock_w_rw_lock(&__table_rw_lock); //write unlock virtual address space
 }
 
 
@@ -371,7 +371,7 @@ void put_value(void *va, void *val, int size) {
      * function.
      */
 
-    __lock_w_rw_lock(&__table_rw_lock);
+    __lock_w_rw_lock(&__table_rw_lock); //write lock virtual address space
 
     unsigned long *virtual_addr = 0;
     *virtual_addr = (unsigned long) va;
@@ -393,7 +393,7 @@ void put_value(void *va, void *val, int size) {
         pte_t *pa_ptr = translate(l1_dir, (void *)*virtual_addr);
         unsigned long *destination = 0;
         *destination = __unsanitized_p_addr(*pa_ptr, __get_offset(*virtual_addr));
-        __unlock_r_rw_lock(&__tlb_rw_lock);
+        __unlock_r_rw_lock(&__tlb_rw_lock); //unlock the read lock that translate had placed on tlb
 
         /***** read to physical address *****/
         __lock_w_rw_lock(&__physical_rw_lock);
@@ -402,7 +402,7 @@ void put_value(void *va, void *val, int size) {
         /************************************/
     }
 
-    __unlock_w_rw_lock(&__table_rw_lock);
+    __unlock_w_rw_lock(&__table_rw_lock); //write unlock virtual address space
 }
 
 
@@ -415,7 +415,7 @@ void get_value(void *va, void *val, int size) {
     * "val" address. Assume you can access "val" directly by derefencing them.
     */
 
-    __lock_r_rw_lock(&__table_rw_lock);
+    __lock_r_rw_lock(&__table_rw_lock); //read lock the virtual address space
 
     unsigned long *virtual_addr = 0;
     *virtual_addr = (unsigned long) va;
@@ -424,9 +424,10 @@ void get_value(void *va, void *val, int size) {
     unsigned long *rem_size = 0;
     *rem_size = size;
 
+    unsigned long start_vpn = (unsigned long) va >> offset_bits;
     unsigned long end_vpn = ((unsigned long) va + (size - 1)) >> offset_bits;
 
-    if (!__valid_address(virtual_bitmap, ((unsigned long) va >> offset_bits), end_vpn)) {
+    if (!__valid_address(virtual_bitmap, start_vpn, end_vpn)) {
         printf("invalid source address (va) or size given\n");
         exit(EXIT_FAILURE);
     }
@@ -436,7 +437,7 @@ void get_value(void *va, void *val, int size) {
         pte_t *pa_ptr = translate(l1_dir, (void *) *virtual_addr);
         unsigned long *source = 0;
         *source = __unsanitized_p_addr(*pa_ptr, __get_offset(*virtual_addr));
-        __unlock_r_rw_lock(&__tlb_rw_lock);
+        __unlock_r_rw_lock(&__tlb_rw_lock); //unlock the read lock placed on tlb by translate
 
         /***** read from physical address *****/
         __lock_r_rw_lock(&__physical_rw_lock);
@@ -445,7 +446,7 @@ void get_value(void *va, void *val, int size) {
         /**************************************/
     }
 
-    __unlock_r_rw_lock(&__table_rw_lock);
+    __unlock_r_rw_lock(&__table_rw_lock); //read unlock the virtual address space
 }
 
 
@@ -456,8 +457,6 @@ argument representing the number of rows and columns. After performing matrix
 multiplication, copy the result to answer.
 */
 void mat_mult(void *mat1, void *mat2, int size, void *answer) {
-
-    __initialization_check();
 
     /* Hint: You will index as [i * size + j] where  "i, j" are the indices of the
      * matrix accessed. Similar to the code in test.c, you will use get_value() to
@@ -566,8 +565,6 @@ char __log_base2(unsigned long long val) {
         val2 >>= 1UL;
         bits += 1;
     }
-    if (val % 2 != 0)
-        return bits;
     return bits - 1;
 }
 
@@ -641,6 +638,7 @@ void __remove_TLB(unsigned long va) {
                 entries[i].valid = 0;
                 __unset_bit_at_index(tlb_bitmap, i);
                 tlb_hits += 1U;
+                no_free_tlb += 1U;
                 __unlock_w_rw_lock(&__tlb_rw_lock);
                 return;
             }
