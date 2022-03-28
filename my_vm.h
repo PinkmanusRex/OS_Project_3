@@ -75,7 +75,7 @@ extern pthread_cond_t init_cond;
 
 extern struct rw_lock __tlb_rw_lock;
 extern struct rw_lock __table_rw_lock;
-extern struct rw_lock __physical_lock;
+extern struct rw_lock __physical_rw_lock;
 
 extern unsigned long l1_base;
 extern unsigned long p_base;

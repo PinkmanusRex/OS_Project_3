@@ -231,10 +231,10 @@ page_map(pde_t *pgdir, void *va, void *pa)
     virtual to physical mapping */
     unsigned long l1_idx = __get_l1_idx((unsigned long) va);
     if (pgdir[l1_idx] == 0UL){ //can't be 0UL since even if 0UL was a possible pa, the root page directory would have taken that address as its base address already
-        __lock_w_rw_lock(&__physical_lock); //physical write lock
+        __lock_w_rw_lock(&__physical_rw_lock); //physical write lock
         unsigned long table_addr = __insert_page_table();
         pgdir[l1_idx] = table_addr;
-        __unlock_w_rw_lock(&__physical_lock); //physical write unlock
+        __unlock_w_rw_lock(&__physical_rw_lock); //physical write unlock
     }
     unsigned long l2_idx = __get_l2_idx((unsigned long) va);
     pte_t *pgtable = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
@@ -672,7 +672,7 @@ void __lock_w_rw_lock(struct rw_lock *rw) {
     pthread_mutex_unlock(&rw->lock);
 }
 
-void __unlock_w_rw(struct rw_lock *rw) {
+void __unlock_w_rw_lock(struct rw_lock *rw) {
     pthread_mutex_lock(&rw->lock);
     rw->no_writing = 0;
     rw->no_writers -= 1U;
