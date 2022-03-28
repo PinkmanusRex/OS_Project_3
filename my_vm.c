@@ -647,3 +647,35 @@ void __remove_TLB(unsigned long va) {
     tlb_misses += 1U;
     __unlock_w_rw_lock(&__tlb_rw_lock);
 }
+
+void __lock_r_rw_lock(struct rw_lock *rw) {
+    pthread_mutex_lock(&rw->lock);
+    while (rw->no_writers)
+        pthread_cond_wait(&rw->cond, &rw->lock);
+    rw->no_readers += 1U;
+    pthread_mutex_unlock(&rw->lock);
+}
+
+void __unlock_r_rw_lock(struct rw_lock *rw) {
+    pthread_mutex_lock(&rw->lock);
+    rw->no_readers -= 1U;
+    pthread_cond_broadcast(&rw->cond);
+    pthread_mutex_unlock(&rw->lock);
+}
+
+void __lock_w_rw_lock(struct rw_lock *rw) {
+    pthread_mutex_lock(&rw->lock);
+    rw->no_writers += 1U;
+    while (rw->no_writing || rw->no_readers)
+        pthread_cond_wait(&rw->cond, &rw->lock);
+    rw->no_writing = 1U;
+    pthread_mutex_unlock(&rw->lock);
+}
+
+void __unlock_w_rw(struct rw_lock *rw) {
+    pthread_mutex_lock(&rw->lock);
+    rw->no_writing = 0;
+    rw->no_writers -= 1U;
+    pthread_cond_broadcast(&rw->cond);
+    pthread_mutex_unlock(&rw->lock);
+}
