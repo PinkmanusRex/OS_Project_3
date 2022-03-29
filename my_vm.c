@@ -440,13 +440,13 @@ void put_value(void *va, void *val, int size) {
 
         /***** read to physical address *****/
         __lock_w_rw_lock(&__physical_rw_lock);
-        unsigned long len = PGSIZE - __get_offset(virtual_addr);
-        unsigned long sz = rem_size <= len ? rem_size : len;
-        memcpy((void *)destination, (void *)source, sz);
+        //unsigned long len = PGSIZE - __get_offset(virtual_addr);
+        //unsigned long sz = rem_size <= len ? rem_size : len;
+        //memcpy((void *)destination, (void *)source, sz);
+        unsigned int sz = __write(virtual_addr, source, destination, rem_size, PGSIZE - __get_offset(virtual_addr));
         rem_size -= sz;
         virtual_addr += sz;
         source += sz;
-        //__write(&virtual_addr, &source, &destination, &rem_size, PGSIZE - __get_offset(virtual_addr));
         //printf("\tchecking again %d\n", *(int *)__unsanitized_p_addr(*pfn_ptr, __get_offset((unsigned long) va)));
         __unlock_w_rw_lock(&__physical_rw_lock);
         /************************************/
@@ -493,13 +493,13 @@ void get_value(void *va, void *val, int size) {
 
         /***** read from physical address *****/
         __lock_r_rw_lock(&__physical_rw_lock);
-        unsigned long len = PGSIZE - __get_offset(virtual_addr);
-        unsigned long sz = rem_size <= len ? rem_size : len;
-        memcpy((void *)destination, (void *)source, sz);
+        //unsigned long len = PGSIZE - __get_offset(virtual_addr);
+        //unsigned long sz = rem_size <= len ? rem_size : len;
+        //memcpy((void *)destination, (void *)source, sz);
+        unsigned int sz =__write(virtual_addr, source, destination, rem_size, PGSIZE - __get_offset(virtual_addr));
         rem_size -= sz;
         virtual_addr += sz;
         destination += sz;
-        //__write(&virtual_addr, &source, &destination, &rem_size, PGSIZE - __get_offset(virtual_addr));
         __unlock_r_rw_lock(&__physical_rw_lock);
         /**************************************/
     }
@@ -604,14 +604,11 @@ void __init_directory(pde_t *directory, unsigned int no_entries) {
     }
 }
 
-void __write(unsigned long *va, unsigned long *source, unsigned long *destination, unsigned long *rem_size, unsigned long len) {
-    unsigned long sz_to_write = (*rem_size <= len) ? *rem_size : len;
+unsigned int __write(unsigned long va, unsigned long source, unsigned long destination, unsigned long rem_size, unsigned long len) {
+    unsigned long sz_to_write = (rem_size <= len) ? rem_size : len;
     memcpy((void *) destination, (void *) source, sz_to_write);
     //printf("\t\t\tdestination value %d\n", *(int *)*destination);
-    *source += sz_to_write;
-    *destination += sz_to_write;
-    *va += sz_to_write;
-    *rem_size -= sz_to_write;
+    return sz_to_write;
 }
 
 char __log_base2(unsigned long long val) {

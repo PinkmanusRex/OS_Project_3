@@ -145,7 +145,7 @@ void __init_directory(pde_t *directory, unsigned int no_entries);
  * rem_size - the remaining amount of bytes to be written down
  * len - the maximum number of bytes that can be written
  */
-void __write(unsigned long *va, unsigned long *source, unsigned long *destination, unsigned long *rem_size, unsigned long len);
+unsigned int __write(unsigned long va, unsigned long source, unsigned long destination, unsigned long rem_size, unsigned long len);
 
 char __log_base2(unsigned long long val);
 
