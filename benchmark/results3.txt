@@ -1,0 +1,1218 @@
+Allocating three arrays of 400 bytes
+Addresses of the allocations: 0, 1000, 2000
+Storing integers to generate a SIZExSIZE matrix
+	in put_value()
+		val value 1	destination 3084066832
+	checking again 1
+	in put_value()
+		val value 1	destination 3084075024
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062740
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062740
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062744
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062744
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062748
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062748
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062752
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062752
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062756
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062756
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062760
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062760
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062764
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062764
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062768
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062768
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062772
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062772
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062776
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062776
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062780
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062780
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062784
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062784
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062788
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062788
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062792
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062792
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062796
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062796
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062800
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062800
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062804
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062804
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062808
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062808
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062812
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062812
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062816
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062816
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062820
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062820
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062824
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062824
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062828
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062828
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062832
+	checking again 1
+	in put_value()
+		val value 1	destination 3084062832
+	checking again 1
+Fetching matrix elements stored in the arrays
+	in get_value()
+		writing - virtual addr = 0, source = 3084066832, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4096, source = 3084075024, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 4, source = 3084062740, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4100, source = 3084062740, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 8, source = 3084062744, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4104, source = 3084062744, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 12, source = 3084062748, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4108, source = 3084062748, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 16, source = 3084062752, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4112, source = 3084062752, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 
+	in get_value()
+		writing - virtual addr = 20, source = 3084062756, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4116, source = 3084062756, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 24, source = 3084062760, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4120, source = 3084062760, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 28, source = 3084062764, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4124, source = 3084062764, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 32, source = 3084062768, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4128, source = 3084062768, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 36, source = 3084062772, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4132, source = 3084062772, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 
+	in get_value()
+		writing - virtual addr = 40, source = 3084062776, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4136, source = 3084062776, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 44, source = 3084062780, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4140, source = 3084062780, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 48, source = 3084062784, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4144, source = 3084062784, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 52, source = 3084062788, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4148, source = 3084062788, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 56, source = 3084062792, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4152, source = 3084062792, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 
+	in get_value()
+		writing - virtual addr = 60, source = 3084062796, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4156, source = 3084062796, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 64, source = 3084062800, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4160, source = 3084062800, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 68, source = 3084062804, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4164, source = 3084062804, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 72, source = 3084062808, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4168, source = 3084062808, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 76, source = 3084062812, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4172, source = 3084062812, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 
+	in get_value()
+		writing - virtual addr = 80, source = 3084062816, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4176, source = 3084062816, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 84, source = 3084062820, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4180, source = 3084062820, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 88, source = 3084062824, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4184, source = 3084062824, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 92, source = 3084062828, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4188, source = 3084062828, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 	in get_value()
+		writing - virtual addr = 96, source = 3084062832, destination = 4289326944, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4192, source = 3084062832, destination = 4289326948, rem_size = 4, source value 1
+	going out of get_value()
+1 
+Performing matrix multiplication with itself!
+	in get_value()
+		writing - virtual addr = 0, source = 3084066832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4096, source = 3084075024, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4, source = 3084062740, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4116, source = 3084062756, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 8, source = 3084062744, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4136, source = 3084062776, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 12, source = 3084062748, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4156, source = 3084062796, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 16, source = 3084062752, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4176, source = 3084062816, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 5	destination 3084079120
+	checking again 5
+	in get_value()
+		writing - virtual addr = 0, source = 3084066832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4100, source = 3084062740, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4, source = 3084062740, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4120, source = 3084062760, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 8, source = 3084062744, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4140, source = 3084062780, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 12, source = 3084062748, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4160, source = 3084062800, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 16, source = 3084062752, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4180, source = 3084062820, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 5	destination 3084062740
+	checking again 5
+	in get_value()
+		writing - virtual addr = 0, source = 3084066832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4104, source = 3084062744, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4, source = 3084062740, destination = 4289326852, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4124, source = 3084062764, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 8, source = 3084062744, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4144, source = 3084062784, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 12, source = 3084062748, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4164, source = 3084062804, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 16, source = 3084062752, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4184, source = 3084062824, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 9	destination 3084062744
+	checking again 9
+	in get_value()
+		writing - virtual addr = 0, source = 3084066832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4108, source = 3084062748, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4, source = 3084062740, destination = 4289326852, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4128, source = 3084062768, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 8, source = 3084062744, destination = 4289326852, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4148, source = 3084062788, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 12, source = 3084062748, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4168, source = 3084062808, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 16, source = 3084062752, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4188, source = 3084062828, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 17	destination 3084062748
+	checking again 17
+	in get_value()
+		writing - virtual addr = 0, source = 3084066832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4112, source = 3084062752, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4, source = 3084062740, destination = 4289326852, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4132, source = 3084062772, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 8, source = 3084062744, destination = 4289326852, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4152, source = 3084062792, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 12, source = 3084062748, destination = 4289326852, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4172, source = 3084062812, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 16, source = 3084062752, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4192, source = 3084062832, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 33	destination 3084062752
+	checking again 33
+	in get_value()
+		writing - virtual addr = 20, source = 3084062756, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4096, source = 3084075024, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 24, source = 3084062760, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4116, source = 3084062756, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 28, source = 3084062764, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4136, source = 3084062776, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 32, source = 3084062768, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4156, source = 3084062796, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 36, source = 3084062772, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4176, source = 3084062816, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 5	destination 3084062756
+	checking again 5
+	in get_value()
+		writing - virtual addr = 20, source = 3084062756, destination = 4289326852, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4100, source = 3084062740, destination = 4289326856, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 24, source = 3084062760, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4120, source = 3084062760, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 28, source = 3084062764, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4140, source = 3084062780, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 32, source = 3084062768, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4160, source = 3084062800, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 36, source = 3084062772, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4180, source = 3084062820, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 29	destination 3084062760
+	checking again 29
+	in get_value()
+		writing - virtual addr = 20, source = 3084062756, destination = 4289326852, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4104, source = 3084062744, destination = 4289326856, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 24, source = 3084062760, destination = 4289326852, rem_size = 4, source value 29
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4124, source = 3084062764, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 28, source = 3084062764, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4144, source = 3084062784, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 32, source = 3084062768, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4164, source = 3084062804, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 36, source = 3084062772, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4184, source = 3084062824, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 77	destination 3084062764
+	checking again 77
+	in get_value()
+		writing - virtual addr = 20, source = 3084062756, destination = 4289326852, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4108, source = 3084062748, destination = 4289326856, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 24, source = 3084062760, destination = 4289326852, rem_size = 4, source value 29
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4128, source = 3084062768, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 28, source = 3084062764, destination = 4289326852, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4148, source = 3084062788, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 32, source = 3084062768, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4168, source = 3084062808, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 36, source = 3084062772, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4188, source = 3084062828, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 193	destination 3084062768
+	checking again 193
+	in get_value()
+		writing - virtual addr = 20, source = 3084062756, destination = 4289326852, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4112, source = 3084062752, destination = 4289326856, rem_size = 4, source value 33
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 24, source = 3084062760, destination = 4289326852, rem_size = 4, source value 29
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4132, source = 3084062772, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 28, source = 3084062764, destination = 4289326852, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4152, source = 3084062792, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 32, source = 3084062768, destination = 4289326852, rem_size = 4, source value 193
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4172, source = 3084062812, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 36, source = 3084062772, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4192, source = 3084062832, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 465	destination 3084062772
+	checking again 465
+	in get_value()
+		writing - virtual addr = 40, source = 3084062776, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4096, source = 3084075024, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 44, source = 3084062780, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4116, source = 3084062756, destination = 4289326856, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 48, source = 3084062784, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4136, source = 3084062776, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 52, source = 3084062788, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4156, source = 3084062796, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 56, source = 3084062792, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4176, source = 3084062816, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 9	destination 3084062776
+	checking again 9
+	in get_value()
+		writing - virtual addr = 40, source = 3084062776, destination = 4289326852, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4100, source = 3084062740, destination = 4289326856, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 44, source = 3084062780, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4120, source = 3084062760, destination = 4289326856, rem_size = 4, source value 29
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 48, source = 3084062784, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4140, source = 3084062780, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 52, source = 3084062788, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4160, source = 3084062800, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 56, source = 3084062792, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4180, source = 3084062820, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 77	destination 3084062780
+	checking again 77
+	in get_value()
+		writing - virtual addr = 40, source = 3084062776, destination = 4289326852, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4104, source = 3084062744, destination = 4289326856, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 44, source = 3084062780, destination = 4289326852, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4124, source = 3084062764, destination = 4289326856, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 48, source = 3084062784, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4144, source = 3084062784, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 52, source = 3084062788, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4164, source = 3084062804, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 56, source = 3084062792, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4184, source = 3084062824, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 6013	destination 3084062784
+	checking again 6013
+	in get_value()
+		writing - virtual addr = 40, source = 3084062776, destination = 4289326852, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4108, source = 3084062748, destination = 4289326856, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 44, source = 3084062780, destination = 4289326852, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4128, source = 3084062768, destination = 4289326856, rem_size = 4, source value 193
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 48, source = 3084062784, destination = 4289326852, rem_size = 4, source value 6013
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4148, source = 3084062788, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 52, source = 3084062788, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4168, source = 3084062808, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 56, source = 3084062792, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4188, source = 3084062828, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 21029	destination 3084062788
+	checking again 21029
+	in get_value()
+		writing - virtual addr = 40, source = 3084062776, destination = 4289326852, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4112, source = 3084062752, destination = 4289326856, rem_size = 4, source value 33
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 44, source = 3084062780, destination = 4289326852, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4132, source = 3084062772, destination = 4289326856, rem_size = 4, source value 465
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 48, source = 3084062784, destination = 4289326852, rem_size = 4, source value 6013
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4152, source = 3084062792, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 52, source = 3084062788, destination = 4289326852, rem_size = 4, source value 21029
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4172, source = 3084062812, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 56, source = 3084062792, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4192, source = 3084062832, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 63145	destination 3084062792
+	checking again 63145
+	in get_value()
+		writing - virtual addr = 60, source = 3084062796, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4096, source = 3084075024, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 64, source = 3084062800, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4116, source = 3084062756, destination = 4289326856, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 68, source = 3084062804, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4136, source = 3084062776, destination = 4289326856, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 72, source = 3084062808, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4156, source = 3084062796, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 76, source = 3084062812, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4176, source = 3084062816, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 17	destination 3084062796
+	checking again 17
+	in get_value()
+		writing - virtual addr = 60, source = 3084062796, destination = 4289326852, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4100, source = 3084062740, destination = 4289326856, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 64, source = 3084062800, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4120, source = 3084062760, destination = 4289326856, rem_size = 4, source value 29
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 68, source = 3084062804, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4140, source = 3084062780, destination = 4289326856, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 72, source = 3084062808, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4160, source = 3084062800, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 76, source = 3084062812, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4180, source = 3084062820, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 193	destination 3084062800
+	checking again 193
+	in get_value()
+		writing - virtual addr = 60, source = 3084062796, destination = 4289326852, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4104, source = 3084062744, destination = 4289326856, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 64, source = 3084062800, destination = 4289326852, rem_size = 4, source value 193
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4124, source = 3084062764, destination = 4289326856, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 68, source = 3084062804, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4144, source = 3084062784, destination = 4289326856, rem_size = 4, source value 6013
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 72, source = 3084062808, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4164, source = 3084062804, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 76, source = 3084062812, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4184, source = 3084062824, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 21029	destination 3084062804
+	checking again 21029
+	in get_value()
+		writing - virtual addr = 60, source = 3084062796, destination = 4289326852, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4108, source = 3084062748, destination = 4289326856, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 64, source = 3084062800, destination = 4289326852, rem_size = 4, source value 193
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4128, source = 3084062768, destination = 4289326856, rem_size = 4, source value 193
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 68, source = 3084062804, destination = 4289326852, rem_size = 4, source value 21029
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4148, source = 3084062788, destination = 4289326856, rem_size = 4, source value 21029
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 72, source = 3084062808, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4168, source = 3084062808, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 76, source = 3084062812, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4188, source = 3084062828, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 442256381	destination 3084062808
+	checking again 442256381
+	in get_value()
+		writing - virtual addr = 60, source = 3084062796, destination = 4289326852, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4112, source = 3084062752, destination = 4289326856, rem_size = 4, source value 33
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 64, source = 3084062800, destination = 4289326852, rem_size = 4, source value 193
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4132, source = 3084062772, destination = 4289326856, rem_size = 4, source value 465
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 68, source = 3084062804, destination = 4289326852, rem_size = 4, source value 21029
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4152, source = 3084062792, destination = 4289326856, rem_size = 4, source value 63145
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 72, source = 3084062808, destination = 4289326852, rem_size = 4, source value 442256381
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4172, source = 3084062812, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 76, source = 3084062812, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4192, source = 3084062832, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 1770222893	destination 3084062812
+	checking again 1770222893
+	in get_value()
+		writing - virtual addr = 80, source = 3084062816, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4096, source = 3084075024, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 84, source = 3084062820, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4116, source = 3084062756, destination = 4289326856, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 88, source = 3084062824, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4136, source = 3084062776, destination = 4289326856, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 92, source = 3084062828, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4156, source = 3084062796, destination = 4289326856, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 96, source = 3084062832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4176, source = 3084062816, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 33	destination 3084062816
+	checking again 33
+	in get_value()
+		writing - virtual addr = 80, source = 3084062816, destination = 4289326852, rem_size = 4, source value 33
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4100, source = 3084062740, destination = 4289326856, rem_size = 4, source value 5
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 84, source = 3084062820, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4120, source = 3084062760, destination = 4289326856, rem_size = 4, source value 29
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 88, source = 3084062824, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4140, source = 3084062780, destination = 4289326856, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 92, source = 3084062828, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4160, source = 3084062800, destination = 4289326856, rem_size = 4, source value 193
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 96, source = 3084062832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4180, source = 3084062820, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 465	destination 3084062820
+	checking again 465
+	in get_value()
+		writing - virtual addr = 80, source = 3084062816, destination = 4289326852, rem_size = 4, source value 33
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4104, source = 3084062744, destination = 4289326856, rem_size = 4, source value 9
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 84, source = 3084062820, destination = 4289326852, rem_size = 4, source value 465
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4124, source = 3084062764, destination = 4289326856, rem_size = 4, source value 77
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 88, source = 3084062824, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4144, source = 3084062784, destination = 4289326856, rem_size = 4, source value 6013
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 92, source = 3084062828, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4164, source = 3084062804, destination = 4289326856, rem_size = 4, source value 21029
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 96, source = 3084062832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4184, source = 3084062824, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 63145	destination 3084062824
+	checking again 63145
+	in get_value()
+		writing - virtual addr = 80, source = 3084062816, destination = 4289326852, rem_size = 4, source value 33
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4108, source = 3084062748, destination = 4289326856, rem_size = 4, source value 17
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 84, source = 3084062820, destination = 4289326852, rem_size = 4, source value 465
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4128, source = 3084062768, destination = 4289326856, rem_size = 4, source value 193
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 88, source = 3084062824, destination = 4289326852, rem_size = 4, source value 63145
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4148, source = 3084062788, destination = 4289326856, rem_size = 4, source value 21029
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 92, source = 3084062828, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4168, source = 3084062808, destination = 4289326856, rem_size = 4, source value 442256381
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 96, source = 3084062832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4188, source = 3084062828, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value 1770222893	destination 3084062828
+	checking again 1770222893
+	in get_value()
+		writing - virtual addr = 80, source = 3084062816, destination = 4289326852, rem_size = 4, source value 33
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4112, source = 3084062752, destination = 4289326856, rem_size = 4, source value 33
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 84, source = 3084062820, destination = 4289326852, rem_size = 4, source value 465
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4132, source = 3084062772, destination = 4289326856, rem_size = 4, source value 465
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 88, source = 3084062824, destination = 4289326852, rem_size = 4, source value 63145
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4152, source = 3084062792, destination = 4289326856, rem_size = 4, source value 63145
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 92, source = 3084062828, destination = 4289326852, rem_size = 4, source value 1770222893
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4172, source = 3084062812, destination = 4289326856, rem_size = 4, source value 1770222893
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 96, source = 3084062832, destination = 4289326852, rem_size = 4, source value 1
+	going out of get_value()
+	in get_value()
+		writing - virtual addr = 4192, source = 3084062832, destination = 4289326856, rem_size = 4, source value 1
+	going out of get_value()
+	in put_value()
+		val value -111364515	destination 3084062832
+	checking again -111364515
+	in get_value()
+		writing - virtual addr = 8192, source = 3084079120, destination = 4289326944, rem_size = 4, source value 5
+	going out of get_value()
+5 	in get_value()
+		writing - virtual addr = 8196, source = 3084062740, destination = 4289326944, rem_size = 4, source value 5
+	going out of get_value()
+5 	in get_value()
+		writing - virtual addr = 8200, source = 3084062744, destination = 4289326944, rem_size = 4, source value 9
+	going out of get_value()
+9 	in get_value()
+		writing - virtual addr = 8204, source = 3084062748, destination = 4289326944, rem_size = 4, source value 17
+	going out of get_value()
+17 	in get_value()
+		writing - virtual addr = 8208, source = 3084062752, destination = 4289326944, rem_size = 4, source value 33
+	going out of get_value()
+33 
+	in get_value()
+		writing - virtual addr = 8212, source = 3084062756, destination = 4289326944, rem_size = 4, source value 5
+	going out of get_value()
+5 	in get_value()
+		writing - virtual addr = 8216, source = 3084062760, destination = 4289326944, rem_size = 4, source value 29
+	going out of get_value()
+29 	in get_value()
+		writing - virtual addr = 8220, source = 3084062764, destination = 4289326944, rem_size = 4, source value 77
+	going out of get_value()
+77 	in get_value()
+		writing - virtual addr = 8224, source = 3084062768, destination = 4289326944, rem_size = 4, source value 193
+	going out of get_value()
+193 	in get_value()
+		writing - virtual addr = 8228, source = 3084062772, destination = 4289326944, rem_size = 4, source value 465
+	going out of get_value()
+465 
+	in get_value()
+		writing - virtual addr = 8232, source = 3084062776, destination = 4289326944, rem_size = 4, source value 9
+	going out of get_value()
+9 	in get_value()
+		writing - virtual addr = 8236, source = 3084062780, destination = 4289326944, rem_size = 4, source value 77
+	going out of get_value()
+77 	in get_value()
+		writing - virtual addr = 8240, source = 3084062784, destination = 4289326944, rem_size = 4, source value 6013
+	going out of get_value()
+6013 	in get_value()
+		writing - virtual addr = 8244, source = 3084062788, destination = 4289326944, rem_size = 4, source value 21029
+	going out of get_value()
+21029 	in get_value()
+		writing - virtual addr = 8248, source = 3084062792, destination = 4289326944, rem_size = 4, source value 63145
+	going out of get_value()
+63145 
+	in get_value()
+		writing - virtual addr = 8252, source = 3084062796, destination = 4289326944, rem_size = 4, source value 17
+	going out of get_value()
+17 	in get_value()
+		writing - virtual addr = 8256, source = 3084062800, destination = 4289326944, rem_size = 4, source value 193
+	going out of get_value()
+193 	in get_value()
+		writing - virtual addr = 8260, source = 3084062804, destination = 4289326944, rem_size = 4, source value 21029
+	going out of get_value()
+21029 	in get_value()
+		writing - virtual addr = 8264, source = 3084062808, destination = 4289326944, rem_size = 4, source value 442256381
+	going out of get_value()
+442256381 	in get_value()
+		writing - virtual addr = 8268, source = 3084062812, destination = 4289326944, rem_size = 4, source value 1770222893
+	going out of get_value()
+1770222893 
+	in get_value()
+		writing - virtual addr = 8272, source = 3084062816, destination = 4289326944, rem_size = 4, source value 33
+	going out of get_value()
+33 	in get_value()
+		writing - virtual addr = 8276, source = 3084062820, destination = 4289326944, rem_size = 4, source value 465
+	going out of get_value()
+465 	in get_value()
+		writing - virtual addr = 8280, source = 3084062824, destination = 4289326944, rem_size = 4, source value 63145
+	going out of get_value()
+63145 	in get_value()
+		writing - virtual addr = 8284, source = 3084062828, destination = 4289326944, rem_size = 4, source value 1770222893
+	going out of get_value()
+1770222893 	in get_value()
+		writing - virtual addr = 8288, source = 3084062832, destination = 4289326944, rem_size = 4, source value -111364515
+	going out of get_value()
+-111364515 
+Freeing the allocations!
+Checking if allocations were freed!
+free function works

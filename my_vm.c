@@ -412,7 +412,10 @@ void put_value(void *va, void *val, int size) {
 
     __lock_w_rw_lock(&__table_rw_lock); //write lock virtual address space
 
+
     //printf("\tin put_value()\n");
+
+    //printf("\t\tval value %d", *((int *)val));
 
     unsigned long virtual_addr = (unsigned long) va;
     unsigned long source = (unsigned long) val;
@@ -432,11 +435,19 @@ void put_value(void *va, void *val, int size) {
         unsigned long destination = __unsanitized_p_addr(*pfn_ptr, __get_offset(virtual_addr));
         __unlock_r_rw_lock(&__tlb_rw_lock); //unlock the read lock that translate had placed on tlb
 
+        //printf("\tdestination %lu\n", destination);
         //printf("\t\twriting - virtual addr = %lu, source = %lu, destination = %lu, rem_size = %lu\n", virtual_addr, source, destination, rem_size);
 
         /***** read to physical address *****/
         __lock_w_rw_lock(&__physical_rw_lock);
-        __write(&virtual_addr, &source, &destination, &rem_size, PGSIZE - __get_offset(virtual_addr));
+        unsigned long len = PGSIZE - __get_offset(virtual_addr);
+        unsigned long sz = rem_size <= len ? rem_size : len;
+        memcpy((void *)destination, (void *)source, sz);
+        rem_size -= sz;
+        virtual_addr += sz;
+        source += sz;
+        //__write(&virtual_addr, &source, &destination, &rem_size, PGSIZE - __get_offset(virtual_addr));
+        //printf("\tchecking again %d\n", *(int *)__unsanitized_p_addr(*pfn_ptr, __get_offset((unsigned long) va)));
         __unlock_w_rw_lock(&__physical_rw_lock);
         /************************************/
     }
@@ -477,11 +488,18 @@ void get_value(void *va, void *val, int size) {
         unsigned long source = __unsanitized_p_addr(*pfn_ptr, __get_offset(virtual_addr));
         __unlock_r_rw_lock(&__tlb_rw_lock); //unlock the read lock placed on tlb by translate
 
-        //printf("\t\twriting - virtual addr = %lu, source = %lu, destination = %lu, rem_size = %lu\n", virtual_addr, source, destination, rem_size);
+        //printf("\t\tsource %lu\n", source);
+        //printf("\t\twriting - virtual addr = %lu, source = %lu, destination = %lu, rem_size = %lu, source value %d\n", virtual_addr, source, destination, rem_size, *(int*)source);
 
         /***** read from physical address *****/
         __lock_r_rw_lock(&__physical_rw_lock);
-        __write(&virtual_addr, &source, &destination, &rem_size, PGSIZE - __get_offset(virtual_addr));
+        unsigned long len = PGSIZE - __get_offset(virtual_addr);
+        unsigned long sz = rem_size <= len ? rem_size : len;
+        memcpy((void *)destination, (void *)source, sz);
+        rem_size -= sz;
+        virtual_addr += sz;
+        destination += sz;
+        //__write(&virtual_addr, &source, &destination, &rem_size, PGSIZE - __get_offset(virtual_addr));
         __unlock_r_rw_lock(&__physical_rw_lock);
         /**************************************/
     }
@@ -589,6 +607,7 @@ void __init_directory(pde_t *directory, unsigned int no_entries) {
 void __write(unsigned long *va, unsigned long *source, unsigned long *destination, unsigned long *rem_size, unsigned long len) {
     unsigned long sz_to_write = (*rem_size <= len) ? *rem_size : len;
     memcpy((void *) destination, (void *) source, sz_to_write);
+    //printf("\t\t\tdestination value %d\n", *(int *)*destination);
     *source += sz_to_write;
     *destination += sz_to_write;
     *va += sz_to_write;
