@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <string.h>
 
 //Assume the address space is 32 bits, so the max memory size is 4GB
 //Page size is 4KB
@@ -148,7 +149,7 @@ void __write(unsigned long *va, unsigned long *source, unsigned long *destinatio
 
 char __log_base2(unsigned long long val);
 
-unsigned int __calc_nec_pages(unsigned int size);
+unsigned long __calc_nec_pages(unsigned long size);
 
 unsigned long __insert_page_table();
 
