@@ -299,54 +299,21 @@ void *t_malloc(unsigned int num_bytes) {
      * HINT: If the physical memory is not yet initialized, then allocate and initialize.
      */
 
+    void *addr = 0;
+
     pthread_mutex_lock(&init_mtx);
     if (!initialized) {
         set_physical_mem();
+        addr = __t_malloc_subroutine(num_bytes);
         initialized = 1;
         pthread_cond_broadcast(&init_cond);
+    } else {
+        addr = __t_malloc_subroutine(num_bytes);
     }
     pthread_mutex_unlock(&init_mtx);
+    
+    return addr;
 
-    //printf("\tin t_malloc()\n");
-
-   /* 
-    * HINT: If the page directory is not initialized, then initialize the
-    * page directory. Next, using get_next_avail(), check if there are free pages. If
-    * free pages are available, set the bitmaps and map a new page. Note, you will
-    * have to mark which physical pages are used.
-    */
-
-    __lock_w_rw_lock(&__table_rw_lock); //write lock virtual address space
-
-    unsigned int no_pages = num_bytes / PGSIZE;
-    if (num_bytes % PGSIZE != 0U)
-        no_pages += 1U;
-    unsigned long start_vpn = (unsigned long) get_next_avail(no_pages);
-    pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
-    for (unsigned int i = 0; i < no_pages; i += 1U) {
-        /******** marking in virtual bitmap ********/
-        __set_bit_at_index(virtual_bitmap, (start_vpn + i));
-        /*******************************************/
-        /** finding and marking the physical page **/
-        char found = 0;
-        __lock_w_rw_lock(&__physical_rw_lock); /** physical write lock **/
-        unsigned long pfn = __get_fit(physical_bitmap, no_p_pages, 1U, &found);
-        if (!found) {
-            printf("physical memory full\n");
-            exit(EXIT_FAILURE);
-        }
-        __set_bit_at_index(physical_bitmap, pfn);
-        __unlock_w_rw_lock(&__physical_rw_lock); /** physical write unlock **/
-        /*******************************************/
-        /******** mapping the vpn to the pfn *******/
-        page_map(l1_dir, (void *)((start_vpn + i) << offset_bits), (void *)pfn);
-        /*******************************************/
-    }
-
-    //printf("\t\treturning the virtual address = %lx\n", (start_vpn << offset_bits));
-    //printf("\tgoing out of t_malloc()\n");
-    __unlock_w_rw_lock(&__table_rw_lock); //write unlock virtual address space
-    return (void *)(start_vpn << offset_bits);
 }
 
 /* Responsible for releasing one or more memory pages using virtual address (va)
@@ -731,4 +698,38 @@ void __unlock_w_rw_lock(struct rw_lock *rw) {
     rw->no_writers -= 1U;
     pthread_cond_broadcast(&rw->cond);
     pthread_mutex_unlock(&rw->lock);
+}
+
+void *__t_malloc_subroutine(unsigned int num_bytes) {
+    __lock_w_rw_lock(&__table_rw_lock); //write lock virtual address space
+
+    unsigned int no_pages = num_bytes / PGSIZE;
+    if (num_bytes % PGSIZE != 0U)
+        no_pages += 1U;
+    unsigned long start_vpn = (unsigned long) get_next_avail(no_pages);
+    pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
+    for (unsigned int i = 0; i < no_pages; i += 1U) {
+        /******** marking in virtual bitmap ********/
+        __set_bit_at_index(virtual_bitmap, (start_vpn + i));
+        /*******************************************/
+        /** finding and marking the physical page **/
+        char found = 0;
+        __lock_w_rw_lock(&__physical_rw_lock); /** physical write lock **/
+        unsigned long pfn = __get_fit(physical_bitmap, no_p_pages, 1U, &found);
+        if (!found) {
+            printf("physical memory full\n");
+            exit(EXIT_FAILURE);
+        }
+        __set_bit_at_index(physical_bitmap, pfn);
+        __unlock_w_rw_lock(&__physical_rw_lock); /** physical write unlock **/
+        /*******************************************/
+        /******** mapping the vpn to the pfn *******/
+        page_map(l1_dir, (void *)((start_vpn + i) << offset_bits), (void *)pfn);
+        /*******************************************/
+    }
+
+    //printf("\t\treturning the virtual address = %lx\n", (start_vpn << offset_bits));
+    //printf("\tgoing out of t_malloc()\n");
+    __unlock_w_rw_lock(&__table_rw_lock); //write unlock virtual address space
+    return (void *)(start_vpn << offset_bits);
 }

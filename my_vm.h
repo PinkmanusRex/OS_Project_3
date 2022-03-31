@@ -163,5 +163,7 @@ unsigned int __valid_address(char *bitmap, unsigned long start_idx, unsigned lon
 unsigned long __get_offset(unsigned long va);
 
 void __remove_TLB(unsigned long va);
+
+void *__t_malloc_subroutine(unsigned int num_bytes);
 /****************************************************************************************************/
 #endif
