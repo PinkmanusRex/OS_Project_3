@@ -667,7 +667,7 @@ unsigned long __get_l1_idx(unsigned long va) {
 }
 
 unsigned long __get_l2_idx(unsigned long va) {
-    return (va & ((1UL << (l2_bits + offset_bits)) - 1UL));
+    return (va & ((1UL << (l2_bits + offset_bits)) - 1UL)) >> offset_bits;
 }
 
 unsigned int __valid_address(char *bitmap, unsigned long start_idx, unsigned long end_idx) {
