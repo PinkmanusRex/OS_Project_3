@@ -48,79 +48,47 @@ char l2_bits = 0;
 Function responsible for allocating and setting your physical memory 
 */
 void set_physical_mem() {
-    //printf("\tin set_physical_mem\n");
-
     //Allocate physical memory using mmap or malloc; this is the total size of
     //your memory you are simulating
-
-    //printf("\t\tmalloc'ing physical memory\n");
     p_base = (unsigned long) malloc(MEMSIZE);
     offset_bits = (char) log2(PGSIZE);
-    //printf("\t\t\tp_base = %lu, unsanitized address is at = %lu\n", p_base, __unsanitized_p_addr(0UL, 0UL));
-    
     //HINT: Also calculate the number of physical and virtual pages and allocate
     //virtual and physical bitmaps and initialize them
-    
-    //printf("\t\tcalculating physical and virtual pages\n");
-
     no_p_pages = 1UL << ((char) log2(MEMSIZE) - offset_bits);
     no_v_pages = 1UL << (SYSBITS - offset_bits);
-    //printf("\t\t\tno_p_pages = %lu, no_v_pages = %lu\n", no_p_pages, no_v_pages);
-
-    //printf("\t\tcalculating the amount of bits for l1 and l2\n");
     l2_bits = (char) log2((PGSIZE/sizeof(pte_t)));
     l1_bits = SYSBITS - offset_bits - l2_bits;
-    //printf("l1_bits = %d, l2_bits = %d\n", l1_bits, l2_bits);
-
     /* how many bytes to allocate for the bitmaps*/
-    //printf("\t\tcreating bitmaps for physical and virtual memory\n");
     unsigned long no_char_p = no_p_pages/8UL;
     if (no_p_pages % 8UL != 0UL) //but must be sure to keep in mind possible non-zero remainder. that needs a byte allocated as well
         no_char_p += 1UL;
     unsigned long no_char_v = no_v_pages/8UL;
     if (no_v_pages % 8UL != 0UL)
         no_char_v += 1UL;
-
     physical_bitmap = (char*) malloc(no_char_p);
     virtual_bitmap = (char *) malloc(no_char_v);
-
-    //printf("\t\t\tphysical_bitmap arr len = %lu, virtual_bitmap arr len = %lu\n", no_char_p, no_char_v);
-
     //And also creating the root page directory and reserving the first necessary amount of physical bits
-
-    //printf("\t\tinitializing the root directory\n");
-
     l1_base = 0UL; //takes the 0th pfn by default
     unsigned int no_entries = 1U << l1_bits;
     __init_directory((pde_t *) __unsanitized_p_addr(l1_base, 0UL), no_entries);
-
     unsigned int no_pfn_to_reserve = __calc_nec_pages(no_entries*sizeof(pde_t));
     for (unsigned int idx = 0U; idx < no_pfn_to_reserve; idx += 1U)
         __set_bit_at_index(physical_bitmap, idx);
-
-    //printf("\t\t\tpfn 0 ... pfn %d reserved for root directory\n", no_pfn_to_reserve - 1U);
-
     unsigned int no_char_tlb = TLB_ENTRIES/8;
     if (TLB_ENTRIES % 8 != 0)
         no_char_tlb += 1U;
-
     tlb_bitmap = (char *) malloc(no_char_tlb);
     for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U)
         tlb_store.entries[i].valid = 0;
-
-    //printf("\tgoing out of set_physical_mem\n");
 }
 
 /*
  * Part 2: Add a virtual to physical page translation to the TLB.
  * Feel free to extend the function arguments or return type.
- *
  */
 int
 add_TLB(void *vpn, void *pfn)
 {
-    //printf("\tin add_TLB()\n");
-
     /*Part 2 HINT: Add a virtual to physical page translation to the TLB */
     unsigned int candidate = 0U;
     if (!no_free_tlb) {
@@ -138,8 +106,6 @@ add_TLB(void *vpn, void *pfn)
     tlb_store.entries[candidate].pfn = (unsigned long) pfn;
     tlb_store.entries[candidate].valid = 1;
     __set_bit_at_index(tlb_bitmap, candidate);
-    //printf("\t\tvpn = %lu, pfn = %lu, candidate = %d\n", (unsigned long) vpn, (unsigned long) pfn, candidate);
-    //printf("\tgoing out of add_TLB()\n");
     return 0;
 }
 
@@ -147,27 +113,18 @@ add_TLB(void *vpn, void *pfn)
  * Part 2: Check TLB for a valid translation.
  * Returns the physical page address.
  * Feel free to extend this function and change the return type.
- *
- * assumption that va has had the offset taken out
- * returns address of the pfn in the tlb, so have to dereference that
  */
 pte_t *
 check_TLB(void *vpn) {
-
-    //printf("\tin check_TLB()\n");
-
     /* Part 2: TLB lookup code here */
     for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U) {
         if(tlb_store.entries[i].valid) {
             if (tlb_store.entries[i].vpn == (unsigned long) vpn) {
                 __set_bit_at_index(tlb_bitmap, i);
-                //printf("\tgoing out of check_TLB()\n");
                 return &tlb_store.entries[i].pfn;
             }
         }
     }
-
-    //printf("\tgoing out of check_TLB()\n");
     return 0;
 }
 
@@ -178,14 +135,9 @@ check_TLB(void *vpn) {
 void
 print_TLB_missrate()
 {
-    __initialization_check();
-
     double miss_rate = 0;	
-
     /*Part 2 Code here to calculate and print the TLB miss rate*/
-
     miss_rate = (double) tlb_misses / (tlb_hits + tlb_misses);
-
     fprintf(stderr, "TLB miss rate %lf \n", miss_rate);
 }
 
@@ -194,8 +146,6 @@ The function takes a virtual address and page directories starting address and
 performs translation to return the physical address
 */
 pte_t *translate(pde_t *pgdir, void *va) {
-
-    //printf("\t\tin translate()\n");
 
     /* Part 1 HINT: Get the Page directory index (1st level) Then get the
     * 2nd-level-page table index using the virtual address.  Using the page
@@ -209,7 +159,6 @@ pte_t *translate(pde_t *pgdir, void *va) {
         printf("can't translate memory never allocated\n");
         exit(EXIT_FAILURE);
     }
-
     pte_t *pa_ptr = NULL;
     __lock_r_rw_lock(&__tlb_rw_lock); /* read lock */
     while (1) {
@@ -223,7 +172,6 @@ pte_t *translate(pde_t *pgdir, void *va) {
             pte_t *l2_table = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
             unsigned long l2_idx = __get_l2_idx((unsigned long) va);
             unsigned long pfn = l2_table[l2_idx];
-            //printf("\t\t\tl2_table at = %lu, l2_idx = %lu, pfn = %lu\n", (unsigned long) l2_table, l2_idx, pfn);
             __unlock_r_rw_lock(&__tlb_rw_lock); //need to unlock the read lock so that the writing into the TLB can work
             __lock_w_rw_lock(&__tlb_rw_lock); /* write lock */
             add_TLB(va, (void *) pfn);
@@ -231,9 +179,6 @@ pte_t *translate(pde_t *pgdir, void *va) {
             __lock_r_rw_lock(&__tlb_rw_lock); //ensures that there is a read lock once this function exits. This is to protect the returned pointer to the pte_t in a multithreaded environment
         }
     }
-
-    //If translation not successful, then return NULL
-    //printf("\t\tgoing out of translate()\n");
     return pa_ptr; 
 }
 
@@ -244,11 +189,9 @@ as an argument, and sets a page table entry. This function will walk the page
 directory to see if there is an existing mapping for a virtual address. If the
 virtual address is not present, then a new entry will be added
 */
-//assuming that va and pa have the offset removed already
 int
 page_map(pde_t *pgdir, void *va, void *pfn)
 {
-    //printf("\tin page_map()\n");
     /*HINT: Similar to translate(), find the page directory (1st level)
     and page table (2nd-level) indices. If no mapping exists, set the
     virtual to physical mapping */
@@ -257,14 +200,11 @@ page_map(pde_t *pgdir, void *va, void *pfn)
         __lock_w_rw_lock(&__physical_rw_lock); //physical write lock
         unsigned long table_pfn = __insert_page_table();
         pgdir[l1_idx] = table_pfn;
-        //printf("\t\ta page table allocated to pfn = %lu, p addr = %lu\n", table_pfn, __unsanitized_p_addr(table_pfn, 0UL));
         __unlock_w_rw_lock(&__physical_rw_lock); //physical write unlock
     }
     unsigned long l2_idx = __get_l2_idx((unsigned long) va);
     pte_t *pgtable = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
     pgtable[l2_idx] = (unsigned long) pfn;
-    //printf("\t\t vpn = %lu, pfn = %lu\n", ((unsigned long) va >> offset_bits), (unsigned long) pfn);
-    //printf("\tgoing out page_map()\n");
     return 0;
 }
 
@@ -273,8 +213,6 @@ page_map(pde_t *pgdir, void *va, void *pfn)
 */
 void *get_next_avail(int num_pages) {
 
-    //printf("\tin get_next_avail()\n");
- 
     //Use virtual address bitmap to find the next free page
     char found = 0;
     void *candidate = (void *) __get_fit(virtual_bitmap, no_v_pages, num_pages, &found);
@@ -284,8 +222,6 @@ void *get_next_avail(int num_pages) {
     }
     for (unsigned int i = 0; i < num_pages; i += 1U)
         __set_bit_at_index(virtual_bitmap, (unsigned long) candidate + i);
-
-    //printf("\tgoing out of get_next_avail()\n");
     return candidate;
 }
 
@@ -330,18 +266,13 @@ void t_free(void *va, int size) {
      */
 
     __lock_w_rw_lock(&__table_rw_lock); //write lock virtual address space
-
-    //printf("\tin t_free()\n");
-
     unsigned long start_vpn = (unsigned long) va >> offset_bits;
     unsigned long end_vpn = ((unsigned long) va + (size - 1)) >> offset_bits;
     if (!__valid_address(virtual_bitmap, start_vpn, end_vpn)) {
         printf("invalid address or size given to free\n");
         exit(EXIT_FAILURE);
     }
-
     pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
-
     for (unsigned long vpn_tracker = start_vpn; vpn_tracker <= end_vpn; vpn_tracker += 1UL) {
         __unset_bit_at_index(virtual_bitmap, vpn_tracker); //mark availability in virtual bitmap
         unsigned long l1_idx = __get_l1_idx(vpn_tracker << offset_bits);
@@ -352,10 +283,7 @@ void t_free(void *va, int size) {
         __unset_bit_at_index(physical_bitmap, pfn); //mark availability in physical bitmap
         __unlock_w_rw_lock(&__physical_rw_lock); //physical write unlock
         __remove_TLB(vpn_tracker);
-        //printf("\t\tfree vpn = %lu, pfn = %lu\n", vpn_tracker, pfn);
     }
-
-    //printf("\tgoing out of t_free()\n");
     __unlock_w_rw_lock(&__table_rw_lock); //write unlock virtual address space
 
 }
@@ -378,12 +306,6 @@ void put_value(void *va, void *val, int size) {
      */
 
     __lock_w_rw_lock(&__table_rw_lock); //write lock virtual address space
-
-
-    //printf("\tin put_value()\n");
-
-    //printf("\t\tval value %d", *((int *)val));
-
     unsigned long virtual_addr = (unsigned long) va;
     unsigned long source = (unsigned long) val;
     unsigned long rem_size = size;
@@ -401,25 +323,15 @@ void put_value(void *va, void *val, int size) {
         pte_t *pfn_ptr = translate(l1_dir, (void *)virtual_addr);
         unsigned long destination = __unsanitized_p_addr(*pfn_ptr, __get_offset(virtual_addr));
         __unlock_r_rw_lock(&__tlb_rw_lock); //unlock the read lock that translate had placed on tlb
-
-        //printf("\tdestination %lu\n", destination);
-        //printf("\t\twriting - virtual addr = %lu, source = %lu, destination = %lu, rem_size = %lu\n", virtual_addr, source, destination, rem_size);
-
         /***** read to physical address *****/
         __lock_w_rw_lock(&__physical_rw_lock);
-        //unsigned long len = PGSIZE - __get_offset(virtual_addr);
-        //unsigned long sz = rem_size <= len ? rem_size : len;
-        //memcpy((void *)destination, (void *)source, sz);
         unsigned int sz = __write(virtual_addr, source, destination, rem_size, PGSIZE - __get_offset(virtual_addr));
         rem_size -= sz;
         virtual_addr += sz;
         source += sz;
-        //printf("\tchecking again %d\n", *(int *)__unsanitized_p_addr(*pfn_ptr, __get_offset((unsigned long) va)));
         __unlock_w_rw_lock(&__physical_rw_lock);
         /************************************/
     }
-
-    //printf("\tgoing out of put_value()\n");
     __unlock_w_rw_lock(&__table_rw_lock); //write unlock virtual address space
 }
 
@@ -434,35 +346,22 @@ void get_value(void *va, void *val, int size) {
     */
 
     __lock_r_rw_lock(&__table_rw_lock); //read lock the virtual address space
-
-    //printf("\tin get_value()\n");
-
     unsigned long virtual_addr = (unsigned long) va;
     unsigned long destination = (unsigned long) val;
     unsigned long rem_size = size;
-
     unsigned long start_vpn = (unsigned long) va >> offset_bits;
     unsigned long end_vpn = ((unsigned long) va + (size - 1)) >> offset_bits;
-
     if (!__valid_address(virtual_bitmap, start_vpn, end_vpn)) {
         printf("invalid source address (va) or size given\n");
         exit(EXIT_FAILURE);
     }
-
     pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
     while (rem_size) {
         pte_t *pfn_ptr = translate(l1_dir, (void *) virtual_addr);
         unsigned long source = __unsanitized_p_addr(*pfn_ptr, __get_offset(virtual_addr));
         __unlock_r_rw_lock(&__tlb_rw_lock); //unlock the read lock placed on tlb by translate
-
-        //printf("\t\tsource %lu\n", source);
-        //printf("\t\twriting - virtual addr = %lu, source = %lu, destination = %lu, rem_size = %lu, source value %d\n", virtual_addr, source, destination, rem_size, *(int*)source);
-
         /***** read from physical address *****/
         __lock_r_rw_lock(&__physical_rw_lock);
-        //unsigned long len = PGSIZE - __get_offset(virtual_addr);
-        //unsigned long sz = rem_size <= len ? rem_size : len;
-        //memcpy((void *)destination, (void *)source, sz);
         unsigned int sz =__write(virtual_addr, source, destination, rem_size, PGSIZE - __get_offset(virtual_addr));
         rem_size -= sz;
         virtual_addr += sz;
@@ -470,9 +369,6 @@ void get_value(void *va, void *val, int size) {
         __unlock_r_rw_lock(&__physical_rw_lock);
         /**************************************/
     }
-
-    //printf("\tgoing out of get_value()\n");
-
     __unlock_r_rw_lock(&__table_rw_lock); //read unlock the virtual address space
 }
 
@@ -727,9 +623,6 @@ void *__t_malloc_subroutine(unsigned int num_bytes) {
         page_map(l1_dir, (void *)((start_vpn + i) << offset_bits), (void *)pfn);
         /*******************************************/
     }
-
-    //printf("\t\treturning the virtual address = %lx\n", (start_vpn << offset_bits));
-    //printf("\tgoing out of t_malloc()\n");
     __unlock_w_rw_lock(&__table_rw_lock); //write unlock virtual address space
     return (void *)(start_vpn << offset_bits);
 }

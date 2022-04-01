@@ -118,9 +118,7 @@ void __unlock_w_rw_lock(struct rw_lock *rw);
 //get back the true physical address, which involves right shifting and appending back in the physical offset
 unsigned long __unsanitized_p_addr(unsigned long pfn, unsigned long offset);
 
-//assumes va has already had offset bits taken out
 unsigned long __get_l1_idx(unsigned long va);
-//assumes va has already had offset bits taken out
 unsigned long __get_l2_idx(unsigned long va);
 
 unsigned long __get_fit(char *bitmap, unsigned long bitmap_length, unsigned int no_pages, char *found);
