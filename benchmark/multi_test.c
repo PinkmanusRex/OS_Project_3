@@ -122,5 +122,5 @@ int main() {
     if (!flag) {
         printf("Some Problem with free!\n");
     }
-    printf("old %d, temp %d\n", old, (int)temp);
+    printf("old %x, temp %x\n", old, (int)temp);
 }

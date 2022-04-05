@@ -100,6 +100,8 @@ extern unsigned int tlb_misses;
 extern char l1_bits;
 extern char l2_bits;
 
+extern unsigned long insert_page_table_helper_idx;
+
 void __init_rw_lock(struct rw_lock *rw);
 
 void __destroy_rw_lock(struct rw_lock *rw);
@@ -163,5 +165,7 @@ unsigned long __get_offset(unsigned long va);
 void __remove_TLB(unsigned long va);
 
 void *__t_malloc_subroutine(unsigned int num_bytes);
+
+int __find_if_enough_physical_pages(unsigned int no_pages);
 /****************************************************************************************************/
 #endif
