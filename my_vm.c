@@ -470,7 +470,6 @@ void __init_directory(pde_t *directory, unsigned int no_entries) {
 unsigned int __write(unsigned long va, unsigned long source, unsigned long destination, unsigned long rem_size, unsigned long len) {
     unsigned long sz_to_write = (rem_size <= len) ? rem_size : len;
     memcpy((void *) destination, (void *) source, sz_to_write);
-    //printf("\t\t\tdestination value %d\n", *(int *)*destination);
     return sz_to_write;
 }
 
@@ -605,9 +604,6 @@ void *__t_malloc_subroutine(unsigned int num_bytes) {
     unsigned long start_vpn = (unsigned long) get_next_avail(no_pages);
     pde_t *l1_dir = (pde_t *) __unsanitized_p_addr(l1_base, 0UL);
     for (unsigned int i = 0; i < no_pages; i += 1U) {
-        /******** marking in virtual bitmap ********/
-        __set_bit_at_index(virtual_bitmap, (start_vpn + i));
-        /*******************************************/
         /** finding and marking the physical page **/
         char found = 0;
         __lock_w_rw_lock(&__physical_rw_lock); /** physical write lock **/
