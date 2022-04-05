@@ -225,7 +225,7 @@ void *get_next_avail(int num_pages) {
         candidate = 0UL;
     } else {
         for (unsigned int i = 0; i < num_pages; i += 1U)
-            __set_bit_at_index(virtual_bitmap, (unsigned long) candidate + i);
+            __set_bit_at_index(virtual_bitmap, candidate + i);
         candidate += 1UL;
     }
     return (void *) candidate;

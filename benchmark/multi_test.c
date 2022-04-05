@@ -123,4 +123,5 @@ int main() {
         printf("Some Problem with free!\n");
     }
     printf("old %x, temp %x\n", old, (int)temp);
+    print_TLB_missrate();
 }
