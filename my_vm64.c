@@ -52,44 +52,32 @@ unsigned long insert_page_table_helper_idx = 0UL;
 //putting l3 and l4 bit functions here to not mess with header file
 
 unsigned long __get_l1_idx(unsigned long va) {
-    return (((1UL << l1_bits) - 1UL) & ( va >> ((offset_bits + l4_bits + l3_bits + l2_bits) - 1UL)));
+    return (va >> (l2_bits + l3_bits + l4_bits + offset_bits));
 }
 
 unsigned long __get_l2_idx(unsigned long va) {
-    return (((1UL << l2_bits) - 1UL) & ( va >> ( (offset_bits + l4_bits + l3_bits) - 1UL)));
+    unsigned long l2_mask = (1UL << l2_bits) - 1UL;
+    unsigned long shifted_va = va >> (l3_bits + l4_bits + offset_bits);
+    return shifted_va & l2_mask;
 }
 
 unsigned long __get_l3_idx(unsigned long va) {
-    return (((1UL << l3_bits) - 1UL) & ( va >> ( (offset_bits + l4_bits) - 1UL)));
+    unsigned long l3_mask = (1UL << l3_bits) - 1UL;
+    unsigned long shifted_va = va >> (l4_bits + offset_bits);
+    return shifted_va & l3_mask;
 }
 
 unsigned long __get_l4_idx(unsigned long va){
-    return (((1UL << l4_bits) - 1UL) & ( va >> ( offset_bits - 1UL)));
+    unsigned long l4_mask = (1UL << l4_bits) - 1UL;
+    unsigned long shifted_va = va >> offset_bits;
+    return shifted_va & l4_mask;
 }
 
 void __set_levels(){
-
-    char bitsPerLevel = (SYSBITS - offset_bits) / 4;
-
-    char remainder = (SYSBITS - offset_bits) % 4;
-    char adjustment = 0;
-
-    //check to see if theres uneven split into 4 levels
-    if(remainder != 0){
-        adjustment = 1;
-    }
-    else{
-        l1_bits = bitsPerLevel;
-    }
-
-    l1_bits = bitsPerLevel;
-
-    //all the same value but just doing this for convenience
-    l2_bits = bitsPerLevel + adjustment;
-    l3_bits = bitsPerLevel + adjustment;
-    l4_bits = bitsPerLevel + adjustment;
-
-    return;
+    l4_bits = (char) log2((PGSIZE)/sizeof(pte_t));
+    l3_bits = (char) log2((PGSIZE)/sizeof(pde_t));
+    l2_bits = l3_bits;
+    l1_bits = SYSBITS64 - offset_bits - l2_bits - l3_bits - l4_bits;
 }
 
 /*
@@ -103,7 +91,7 @@ void set_physical_mem() {
     //HINT: Also calculate the number of physical and virtual pages and allocate
     //virtual and physical bitmaps and initialize them
     no_p_pages = 1UL << ((char) log2(MEMSIZE) - offset_bits);
-    no_v_pages = 1UL << (SYSBITS - offset_bits);
+    no_v_pages = 1UL << (SYSBITS64 - offset_bits);
 
     /* Need to calculate 4 levels now */
     __set_levels();
@@ -117,21 +105,16 @@ void set_physical_mem() {
         no_char_v += 1UL;
 
     physical_bitmap = (char*) malloc(no_char_p);
+    printf("\tphysical_bitmap @ %lu\n", (unsigned long) physical_bitmap);
     virtual_bitmap = (char *) malloc(no_char_v);
+    printf("\tvirtual_bitmap @ %lu\n", (unsigned long) virtual_bitmap);
 
     //And also creating the root page directory and reserving the first necessary amount of physical bits
     l1_base = 0UL; //takes the 0th pfn by default. Also works for each directory.
 
-    unsigned int no_entries1 = 1U << l1_bits;
-    unsigned int no_entries2 = 1U << l2_bits;
-    unsigned int no_entries3 = 1U << l3_bits;
-
-    //FIXME: initialize directory for each level
-    __init_directory((pde_t *) __unsanitized_p_addr(l1_base, 0UL), no_entries1);
-    __init_directory((pde_t *) __unsanitized_p_addr(l1_base, 0UL), no_entries2);
-    __init_directory((pde_t *) __unsanitized_p_addr(l1_base, 0UL), no_entries3);
-
-    unsigned int no_pfn_to_reserve = __calc_nec_pages(no_entries1*sizeof(pde_t));
+    unsigned int no_entries = 1U << l1_bits;
+    __init_directory((pde_t *) __unsanitized_p_addr(l1_base, 0UL), no_entries);
+    unsigned int no_pfn_to_reserve = __calc_nec_pages(no_entries*sizeof(pde_t));
     for (unsigned int idx = 0U; idx < no_pfn_to_reserve; idx += 1U)
         __set_bit_at_index(physical_bitmap, idx);
     unsigned int no_char_tlb = TLB_ENTRIES/8;
@@ -140,6 +123,8 @@ void set_physical_mem() {
     tlb_bitmap = (char *) malloc(no_char_tlb);
     for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U)
         tlb_store.entries[i].valid = 0;
+
+    printf("\ttlb_bitmap @ %lu\n", (unsigned long) tlb_bitmap);
 }
 
 /*
@@ -231,17 +216,16 @@ pte_t *translate(pde_t *pgdir, void *va) {
         } else {
             tlb_misses += 1U;
             unsigned long l1_idx = __get_l1_idx((unsigned long) va);
-            pte_t *l2_table = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
-            
-            //4 level page steps
+
+            pde_t *l2_dir = (pde_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
             unsigned long l2_idx = __get_l2_idx((unsigned long) va);
-            pte_t *l3_table = (pte_t *) __unsanitized_p_addr(pgdir[l2_idx], 0UL);
+
+            pde_t *l3_dir = (pde_t *) __unsanitized_p_addr(l2_dir[l2_idx], 0UL);
             unsigned long l3_idx = __get_l3_idx((unsigned long) va);
-            pte_t *l4_table = (pte_t *) __unsanitized_p_addr(pgdir[l3_idx], 0UL);
+
+            pte_t *l4_table = (pte_t *) __unsanitized_p_addr(l3_dir[l3_idx], 0UL);
             unsigned long l4_idx = __get_l4_idx((unsigned long) va);
-
             unsigned long pfn = l4_table[l4_idx];
-
             __unlock_r_rw_lock(&__tlb_rw_lock); //need to unlock the read lock so that the writing into the TLB can work
             __lock_w_rw_lock(&__tlb_rw_lock); /* write lock */
             add_TLB(va, (void *) pfn);
@@ -267,39 +251,31 @@ page_map(pde_t *pgdir, void *va, void *pfn)
     and page table (2nd-level) indices. If no mapping exists, set the
     virtual to physical mapping */
 
-    unsigned long table_pfn = 0;
-
     unsigned long l1_idx = __get_l1_idx((unsigned long) va);
-
     if (pgdir[l1_idx] == 0UL){ //can't be 0UL since the root page directory would have taken that as its base pfn already
-        unsigned long table_pfn = __insert_page_table();
-        pgdir[l1_idx] = table_pfn;
+        unsigned long dir_pfn = __insert_page_dir();
+        pgdir[l1_idx] = dir_pfn;
     }
 
-    //FIXME: check for 0 in each directory (like l1 and l2 in my_vm)
-    //copying code from before; might make this a helper fxn (stolen from translate fxn)
-    pte_t *l2_table = (pte_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
+    pde_t *l2_dir = (pde_t *) __unsanitized_p_addr(pgdir[l1_idx], 0UL);
     unsigned long l2_idx = __get_l2_idx((unsigned long) va);
-
-    if(l2_table[l2_idx] == 0UL){
-        table_pfn = __insert_page_table();
-        l2_table[l2_idx] = table_pfn;
+    if(l2_dir[l2_idx] == 0UL){
+        unsigned long dir_pfn = __insert_page_dir();
+        l2_dir[l2_idx] = dir_pfn;
     }
-    pte_t *l3_table = (pte_t *) __unsanitized_p_addr(pgdir[l2_idx], 0UL);
+
+    pde_t *l3_dir = (pde_t *) __unsanitized_p_addr(l2_dir[l2_idx], 0UL);
     unsigned long l3_idx = __get_l3_idx((unsigned long) va);
-
-    if(l3_table[l3_idx] == 0UL){
-        table_pfn = __insert_page_table();
-        l3_table[l3_idx] = table_pfn;
+    if(l3_dir[l3_idx] == 0UL){
+        unsigned long table_pfn = __insert_page_table();
+        l3_dir[l3_idx] = table_pfn;
     }
 
-    pte_t *pgtable = (pte_t *) __unsanitized_p_addr(pgdir[l3_idx], 0UL); //l4 directory
+    pte_t *pgtable = (pte_t *) __unsanitized_p_addr(l3_dir[l3_idx], 0UL); //l4 directory
     unsigned long l4_idx = __get_l4_idx((unsigned long) va);
 
-    if(pgtable[l4_idx] == 0UL){
+    if(pgtable[l4_idx] == 0UL)
         pgtable[l4_idx] = (unsigned long) pfn;
-    }
-
     return 0;
 }
 
@@ -374,10 +350,14 @@ void t_free(void *va, int size) {
     for (unsigned long vpn_tracker = start_vpn; vpn_tracker <= end_vpn; vpn_tracker += 1UL) {
         __unset_bit_at_index(virtual_bitmap, vpn_tracker); //mark availability in virtual bitmap
         unsigned long l1_idx = __get_l1_idx(vpn_tracker << offset_bits);
-        pte_t *l2_tab = (pte_t *) __unsanitized_p_addr(l1_dir[l1_idx], 0UL);
+        pde_t *l2_dir = (pde_t *) __unsanitized_p_addr(l1_dir[l1_idx], 0UL);
         unsigned long l2_idx = __get_l2_idx(vpn_tracker << offset_bits);
-        unsigned long pfn = l2_tab[l2_idx];
-        l2_tab[l2_idx] = 0UL;
+        pde_t *l3_dir = (pde_t *) __unsanitized_p_addr(l2_dir[l2_idx], 0UL);
+        unsigned long l3_idx = __get_l3_idx(vpn_tracker << offset_bits);
+        pte_t *l4_tab = (pte_t *) __unsanitized_p_addr(l3_dir[l3_idx], 0UL);
+        unsigned long l4_idx = __get_l4_idx(vpn_tracker << offset_bits);
+        unsigned long pfn = l4_tab[l4_idx];
+        l4_tab[l4_idx] = 0UL;
         __lock_w_rw_lock(&__physical_rw_lock); //physical write lock
         __unset_bit_at_index(physical_bitmap, pfn); //mark availability in physical bitmap
         __unlock_w_rw_lock(&__physical_rw_lock); //physical write unlock
@@ -610,7 +590,27 @@ unsigned long __insert_page_table() {
     }
     __set_bit_at_index(physical_bitmap, pfn);
     unsigned long addr = __unsanitized_p_addr(pfn, 0UL);
-    __init_table((pte_t *) addr, (1U << l2_bits));
+    __init_table((pte_t *) addr, (1U << l4_bits));
+    return pfn;
+}
+
+unsigned long __insert_page_dir() {
+    char found = 0;
+    unsigned long pfn = 0UL;
+    for (unsigned long i = insert_page_table_helper_idx; i < no_v_pages; i += 1UL) {
+        if (!__get_bit_at_index(physical_bitmap, i)) {
+            found = 1;
+            pfn = i;
+            break;
+        }
+    }
+    if (!found) {
+        printf("can't fit directory into physical memory\n");
+        exit(EXIT_FAILURE);
+    }
+    __set_bit_at_index(physical_bitmap, pfn);
+    unsigned long addr = __unsanitized_p_addr(pfn, 0UL);
+    __init_directory((pde_t *) addr, (1 << l2_bits));
     return pfn;
 }
 

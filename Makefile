@@ -5,10 +5,10 @@ RANLIB = ranlib
 
 all: my_vm.a
 
-64:
-	$(CC) -g -c -lpthread my_vm64.c
-	ar -rc libmy_vm.a my_vm64.o
-	ranlib libmy_vm.a
+64: 
+	$(CC) -g -c -lpthread -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast my_vm64.c
+	$(AR) libmy_vm.a my_vm64.o
+	$(RANLIB) libmy_vm.a
 
 my_vm.a: my_vm.o
 	$(AR) libmy_vm.a my_vm.o

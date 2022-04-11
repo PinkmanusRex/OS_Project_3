@@ -10,6 +10,7 @@
 //Page size is 4KB
 
 #define SYSBITS 32
+#define SYSBITS64 48
 
 //Add any important includes here which you may need
 
