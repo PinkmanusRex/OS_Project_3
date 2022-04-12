@@ -73,11 +73,31 @@ unsigned long __get_l4_idx(unsigned long va){
     return shifted_va & l4_mask;
 }
 
+//this is called whenever l1_bits ends up being negative in __set_levels()
+void __set_levels2(){
+    
+    while(l1_bits <= 0){
+        --l4_bits;
+        --l3_bits;
+        --l2_bits;
+        l1_bits = l1_bits + 3;
+    }
+
+    if(l4_bits < 0 || l3_bits < 0 || l2_bits < 0 || l1_bits < 0 )
+        printf("How did this even happen");
+}
+
 void __set_levels(){
     l4_bits = (char) log2((PGSIZE)/sizeof(pte_t));
     l3_bits = (char) log2((PGSIZE)/sizeof(pde_t));
     l2_bits = l3_bits;
     l1_bits = SYSBITS64 - offset_bits - l2_bits - l3_bits - l4_bits;
+
+    //can't have negative amount of bits for l1
+    if(l1_bits < 0){
+        __set_levels2();
+    }
+
 }
 
 /*
@@ -105,9 +125,7 @@ void set_physical_mem() {
         no_char_v += 1UL;
 
     physical_bitmap = (char*) malloc(no_char_p);
-    printf("\tphysical_bitmap @ %lu\n", (unsigned long) physical_bitmap);
     virtual_bitmap = (char *) malloc(no_char_v);
-    printf("\tvirtual_bitmap @ %lu\n", (unsigned long) virtual_bitmap);
 
     //And also creating the root page directory and reserving the first necessary amount of physical bits
     l1_base = 0UL; //takes the 0th pfn by default. Also works for each directory.
@@ -123,8 +141,6 @@ void set_physical_mem() {
     tlb_bitmap = (char *) malloc(no_char_tlb);
     for (unsigned int i = 0; i < TLB_ENTRIES; i += 1U)
         tlb_store.entries[i].valid = 0;
-
-    printf("\ttlb_bitmap @ %lu\n", (unsigned long) tlb_bitmap);
 }
 
 /*
